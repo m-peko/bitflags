@@ -1,1 +1,1 @@
-# smart-enum
+# bitflags
