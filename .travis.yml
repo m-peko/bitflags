@@ -1,0 +1,82 @@
+language: cpp
+
+notifications:
+  email: false
+
+matrix:
+  include:
+
+  - name: "Linux GCC"
+    os: linux
+    dist: bionic
+    compiler: gcc
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - gcc-8
+          - g++-8
+    before_script:
+      # Install new alternatives
+      - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 30
+      - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 30
+
+  - name: "Linux CLANG"
+    os: linux
+    dist: bionic
+    compiler: clang
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - gcc-8
+          - g++-8
+          - clang-7
+
+  - name: "Windows MSVC"
+    os: windows
+    compiler: msvc
+
+  - name: "Linux GCC Code Coverage"
+    os: linux
+    dist: bionic
+    compiler: gcc
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - gcc-8
+          - g++-8
+    before_script:
+      # Install new alternatives
+      - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 30
+      - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 30
+
+      # Enable code coverage
+      - ENABLE_COVERAGE=True
+    after_success:
+      # Upload reports to Codecov
+      - bash <(curl -s https://codecov.io/bash) -x gcov-8
+
+script:
+  # Fetch submodules
+  - git submodule init
+  - git submodule update
+
+  # Create build directory
+  - mkdir -p build
+  - cd build
+
+  # Generate build files
+  - cmake .. -DBITFLAGS_ENABLE_COVERAGE:BOOL=${ENABLE_COVERAGE-False}
+
+  # Compile examples and tests
+  - cmake --build .
+  - cmake --build . --target examples
+  - cmake --build . --target tests
+
+  # Execute tests
+  - ctest

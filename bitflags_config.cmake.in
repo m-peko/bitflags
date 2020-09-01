@@ -1,0 +1,7 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+if (NOT TARGET smart_enum::smart_enum)
+  include (${CMAKE_CURRENT_LIST_DIR}/smart_enum_targets.cmake)
+endif ()
