@@ -200,7 +200,7 @@ template <typename T>
 /**
  * class bitflags
  *
- * Represents a bitmask flag generator. It can be used as a base class that
+ * Represents a typesafe bitmask flag generator. It can be used as a base class that
  * manages a set of flags. The flags should only be defined for integral types.
  */
 template <typename T = uint8_t>
