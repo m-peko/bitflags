@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="img/logo.png" height="100px"/>
+<img src="img/logo.png" height="130px"/>
 
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/m-peko/bitflags/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/m-peko/bitflags.svg?branch=master)](https://travis-ci.org/m-peko/bitflags)
