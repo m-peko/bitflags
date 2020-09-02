@@ -33,7 +33,7 @@
 #include <cstdint>
 #include <string_view>
 
-namespace bitflags {
+namespace bf {
 
 namespace internal {
 
@@ -372,7 +372,7 @@ private:
     internal::flag<T> curr_;
 };
 
-} // bitflags
+} // bf
 
 #define BITFLAG(BITS, NAME) \
     static constexpr flag NAME{ BITS, #NAME }
