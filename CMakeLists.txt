@@ -78,6 +78,8 @@ if (BITFLAGS_BUILD_TESTS)
         set (GOOGLETEST_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/googletest)
         set (GOOGLETEST_LIBRARY ${GOOGLETEST_BINARY_DIR}/googletest)
 
+        set (gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
         enable_testing ()
         add_subdirectory (googletest)
         add_subdirectory (tests)

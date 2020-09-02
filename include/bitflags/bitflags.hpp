@@ -180,7 +180,7 @@ struct flag {
 } // internal
 
 template <typename T>
-struct bitflags;
+class bitflags;
 
 /**
  * Bitwise operators overloads
