@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="img/logo.png" height="130px"/>
+<img src="img/logo.png" height="120px"/>
 
 Single-header C++17 library for easily managing set of flags.
 
