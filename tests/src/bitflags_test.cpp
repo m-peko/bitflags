@@ -149,3 +149,18 @@ TEST_F(BitflagsTest, Toggle) {
     EXPECT_FALSE(flags.contains(Flags::flag_b));
     EXPECT_TRUE(flags.contains(Flags::flag_c));
 }
+
+TEST_F(BitflagsTest, Clear) {
+    Flags flags = Flags::flag_a | Flags::flag_b;
+
+    EXPECT_TRUE(flags.contains(Flags::flag_a));
+    EXPECT_TRUE(flags.contains(Flags::flag_b));
+    EXPECT_FALSE(flags.contains(Flags::flag_c));
+
+    flags.clear();
+
+    EXPECT_TRUE(flags.is_empty());
+    EXPECT_FALSE(flags.contains(Flags::flag_a));
+    EXPECT_FALSE(flags.contains(Flags::flag_b));
+    EXPECT_FALSE(flags.contains(Flags::flag_c));
+}

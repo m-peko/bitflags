@@ -380,6 +380,13 @@ public:
         curr_ ^= rhs;
     }
 
+    /**
+     * Clears all flags currently set.
+     */
+    constexpr void clear() {
+        curr_ = T{};
+    }
+
 protected:
     using flag = internal::flag<T>;
 
