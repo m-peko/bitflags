@@ -100,7 +100,6 @@ TEST_F(BitflagsTest, Empty) {
 
     EXPECT_TRUE(flags.is_empty());
     EXPECT_FALSE(flags.is_all());
-    EXPECT_EQ(flags, Flags::none);
     EXPECT_FALSE(flags & Flags::flag_a);
     EXPECT_FALSE(flags & Flags::flag_b);
     EXPECT_FALSE(flags & Flags::flag_c);
