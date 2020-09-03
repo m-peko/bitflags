@@ -344,16 +344,31 @@ public:
     }
 
     /**
-     * Checks whether all the specified flags are contained within the
-     * current set of flags. Zero flags are treated as always present.
+     * Checks whether specified flag is contained within the current
+     * set of flags. Zero flags are treated as always present.
      *
-     * @param rhs Set of flags to check
+     * @param rhs Flag to check
      *
-     * @return True if all the flags in rhs are contained within the
+     * @return True if the specified flags is contained within the
      *         current set of flags, otherwise false
      */
     [[nodiscard]] constexpr bool contains(internal::flag<T> const& rhs) {
         return curr_ & rhs || rhs == empty();
+    }
+
+    /**
+     * Checks whether all the specified flags are contained within the
+     * current set of flags. Zero flags are treated as always present.
+     *
+     * @param rhs_1 First flag to check
+     * @param rhs_n Other flags to check
+     *
+     * @return True if all the specified flags are contained within the
+     *         current set of flags, otherwise false
+     */
+    template <typename ... U>
+    [[nodiscard]] constexpr bool contains(internal::flag<T> const& rhs_1, U const& ... rhs_n) {
+        return contains(rhs_1) && contains(rhs_n...);
     }
 
     /**

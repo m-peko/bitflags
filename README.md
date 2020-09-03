@@ -140,12 +140,18 @@ struct Flags : bf::bitflags<uint32_t> {
     BITFLAG(0x00000000, none);
     BITFLAG(0x00000001, flag_a);
     BITFLAG(0x00000010, flag_b);
+    BITFLAG(0x00000100, flag_c);
 };
 
-Flags flags = Flags::flag_a;
+Flags flags_1 = Flags::flag_a;
 
-std::cout << flags.contains(Flags::flag_a) << std::endl; // true
-std::cout << flags.contains(Flags::flag_b) << std::endl; // false
+std::cout << flags_1.contains(Flags::flag_a) << std::endl; // true
+std::cout << flags_1.contains(Flags::flag_b) << std::endl; // false
+
+Flags flags_2 = Flags::flag_a | Flags::flag_b;
+
+std::cout << flags_2.contains(Flags::flag_a, Flags::flag_b) << std::endl; // true
+std::cout << flags_2.contains(Flags::flag_a, Flags::flag_c) << std::endl; // false
 ```
 
 ### All or Empty
