@@ -127,6 +127,36 @@ TEST_F(BitflagsTest, Contains) {
     EXPECT_FALSE(flags.contains(Flags::none, Flags::flag_a, Flags::flag_c));
 }
 
+TEST_F(BitflagsTest, Set) {
+    Flags flags = Flags::none;
+
+    EXPECT_FALSE(flags.contains(Flags::flag_a));
+    EXPECT_FALSE(flags.contains(Flags::flag_b));
+    EXPECT_FALSE(flags.contains(Flags::flag_c));
+
+    flags.set(Flags::flag_a);
+    flags.set(Flags::flag_b);
+
+    EXPECT_TRUE(flags.contains(Flags::flag_a));
+    EXPECT_TRUE(flags.contains(Flags::flag_b));
+    EXPECT_FALSE(flags.contains(Flags::flag_c));
+}
+
+TEST_F(BitflagsTest, Remove) {
+    Flags flags = Flags::flag_a | Flags::flag_b;
+
+    EXPECT_TRUE(flags.contains(Flags::flag_a));
+    EXPECT_TRUE(flags.contains(Flags::flag_b));
+    EXPECT_FALSE(flags.contains(Flags::flag_c));
+
+    flags.remove(Flags::flag_a);
+    flags.remove(Flags::flag_b);
+
+    EXPECT_FALSE(flags.contains(Flags::flag_a));
+    EXPECT_FALSE(flags.contains(Flags::flag_b));
+    EXPECT_FALSE(flags.contains(Flags::flag_c));
+}
+
 TEST_F(BitflagsTest, Toggle) {
     Flags flags = Flags::flag_a | Flags::flag_b;
 

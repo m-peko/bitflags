@@ -372,9 +372,31 @@ public:
     }
 
     /**
-     * Sets the specified flags if not already present. Otherwise, unsets the specified flags.
+     * Sets specified flag.
      *
-     * @param rhs Flags to be toggled
+     * @param rhs Flag to be set
+     */
+    constexpr void set(internal::flag<T> const& rhs) noexcept {
+        if (!contains(rhs)) {
+            curr_ ^= rhs;
+        }
+    }
+
+    /**
+     * Unsets specified flag.
+     *
+     * @param rhs Flag to be unset
+     */
+    constexpr void remove(internal::flag<T> const& rhs) noexcept {
+        if (contains(rhs)) {
+            curr_ ^= rhs;
+        }
+    }
+
+    /**
+     * Sets specified flag if not already present. Otherwise, unsets the specified flag.
+     *
+     * @param rhs Flag to be toggled
      */
     constexpr void toggle(internal::flag<T> const& rhs) noexcept {
         curr_ ^= rhs;
