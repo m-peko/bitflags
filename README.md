@@ -8,7 +8,7 @@ Single-header C++17 library for easily managing set of flags.
 [![Build Status](https://travis-ci.org/m-peko/bitflags.svg?branch=master)](https://travis-ci.org/m-peko/bitflags)
 [![Codecov](https://codecov.io/gh/m-peko/bitflags/branch/master/graph/badge.svg)](https://codecov.io/gh/m-peko/bitflags)
 [![Standard](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B17)
-[![Compiler explorer](https://img.shields.io/badge/compiler_explorer-online-blue.svg)](https://godbolt.org/z/Tofsh7)
+[![Compiler explorer](https://img.shields.io/badge/compiler_explorer-online-blue.svg)](https://godbolt.org/z/sPGWY7)
 
 </div>
 
@@ -46,7 +46,7 @@ int main() {
 ## Table of Contents
 
 * [Getting Started](#getting-started)
-    * [What's BITFLAG macro?](#whats-bitflag-macro)
+    * [What's BITFLAG macro?](#whats-a-bitflag-macro)
     * [Bits and Names](#bits-and-names)
     * [Bitwise Operators](#bitwise-operators)
     * [Is Specific Flag Set?](#is-specific-flag-set)
@@ -61,7 +61,7 @@ int main() {
 
 `bitflags` is a single-header header-only C++17 library.
 
-### What's BITFLAG macro?
+### What's a BITFLAG macro?
 
 `BITFLAG` macro is a helper that creates a static constexpr member of an internal `flag` type. In other words, following code snippet:
 
