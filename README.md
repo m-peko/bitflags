@@ -52,6 +52,7 @@ int main() {
     * [Is Specific Flag Set?](#is-specific-flag-set)
     * [All or Empty](#all-or-empty)
     * [Toggle Flags](#toggle-flags)
+    * [Clear Flags](#clear-flags)
 * [Building Samples and Tests](#building-samples-and-tests)
 * [Compiler Compatibility](#compiler-compatibility)
 * [Contributing](#contributing)
@@ -91,7 +92,7 @@ Once the flags are specified, it is possible to get bits representing each flag 
 
 ```cpp
 struct Flags : bf::bitflags<uint32_t> {
-    using bitflags<uint32_t>::bitflags; // inherit constructors
+    using bitflags<uint32_t>::bitflags;
 
     BITFLAG(0x00000000, none);
     BITFLAG(0x00000001, flag_a);
@@ -118,7 +119,7 @@ In case we want to check whether specific flag is set or not, we have 2 options:
 
 ```cpp
 struct Flags : bf::bitflags<uint32_t> {
-    using bitflags<uint32_t>::bitflags; // inherit constructors
+    using bitflags<uint32_t>::bitflags;
 
     BITFLAG(0x00000000, none);
     BITFLAG(0x00000001, flag_a);
@@ -135,7 +136,7 @@ std::cout << static_cast<bool>(flags & Flags::flag_b) << std::endl; // false
 
 ```cpp
 struct Flags : bf::bitflags<uint32_t> {
-    using bitflags<uint32_t>::bitflags; // inherit constructors
+    using bitflags<uint32_t>::bitflags;
 
     BITFLAG(0x00000000, none);
     BITFLAG(0x00000001, flag_a);
@@ -162,7 +163,7 @@ Following member functions are available for setting all the flags or setting no
 
 ```cpp
 struct Flags : bf::bitflags<uint32_t> {
-    using bitflags<uint32_t>::bitflags; // inherit constructors
+    using bitflags<uint32_t>::bitflags;
 
     BITFLAG(0x00000000, none);
     BITFLAG(0x00000001, flag_a);
@@ -181,7 +182,7 @@ std::cout << flags.is_empty() << std::endl;              // false
 
 ```cpp
 struct Flags : bf::bitflags<uint32_t> {
-    using bitflags<uint32_t>::bitflags; // inherit constructors
+    using bitflags<uint32_t>::bitflags;
 
     BITFLAG(0x00000000, none);
     BITFLAG(0x00000001, flag_a);
@@ -202,7 +203,7 @@ It is possible to toggle specific flag, i.e. if the flag is not already set, it 
 
 ```cpp
 struct Flags : bf::bitflags<uint32_t> {
-    using bitflags<uint32_t>::bitflags; // inherit constructors
+    using bitflags<uint32_t>::bitflags;
 
     BITFLAG(0x00000000, none);
     BITFLAG(0x00000001, flag_a);
@@ -218,6 +219,33 @@ std::cout << flags.contains(Flags::flag_a) << std::endl; // false
 std::cout << flags.contains(Flags::flag_b) << std::endl; // false
 flags.toggle(Flags::flag_b);
 std::cout << flags.contains(Flags::flag_b) << std::endl; // true
+```
+
+### Clear Flags
+
+In order to clear all the flags currently set, one can use `clear` member function.
+
+```cpp
+struct Flags : bf::bitflags<uint32_t> {
+    using bitflags<uint32_t>::bitflags;
+
+    BITFLAG(0x00000000, none);
+    BITFLAG(0x00000001, flag_a);
+    BITFLAG(0x00000010, flag_b);
+    BITFLAG(0x00000100, flag_c);
+};
+
+Flags flags = Flags::flag_a | Flags::flag_b;
+
+std::cout << flags.contains(Flags::flag_a) << std::endl; // true
+std::cout << flags.contains(Flags::flag_b) << std::endl; // true
+std::cout << flags.contains(Flags::flag_c) << std::endl; // false
+
+flags.clear();
+
+std::cout << flags.contains(Flags::flag_a) << std::endl; // false
+std::cout << flags.contains(Flags::flag_b) << std::endl; // false
+std::cout << flags.contains(Flags::flag_c) << std::endl; // false
 ```
 
 ## Building Samples and Tests
