@@ -51,6 +51,7 @@ int main() {
     * [Bitwise Operators](#bitwise-operators)
     * [Is Specific Flag Set?](#is-specific-flag-set)
     * [All or Empty](#all-or-empty)
+    * [Set and Remove Specific Flag](#set-and-remove-specific-flag)
     * [Toggle Flags](#toggle-flags)
     * [Clear Flags](#clear-flags)
 * [Building Samples and Tests](#building-samples-and-tests)
@@ -195,6 +196,36 @@ std::cout << flags.is_all() << std::endl;                // false
 std::cout << flags.contains(Flags::flag_a) << std::endl; // false
 std::cout << flags.contains(Flags::flag_b) << std::endl; // false
 std::cout << flags.is_empty() << std::endl;              // true
+```
+
+### Set and Remove Specific Flag
+
+Not only that one can set and remove specific flag by using bitwise operators, but there are also special member functions `set` and `remove` that have the same purpose.
+
+```cpp
+struct Flags : bf::bitflags<uint32_t> {
+    using bitflags<uint32_t>::bitflags;
+
+    BITFLAG(0x00000000, none);
+    BITFLAG(0x00000001, flag_a);
+    BITFLAG(0x00000010, flag_b);
+};
+
+Flags flags = Flags::empty();
+
+std::cout << flags.contains(Flags::flag_a) << std::endl; // false
+std::cout << flags.contains(Flags::flag_b) << std::endl; // false
+
+flags.set(Flags::flag_a);
+flags.set(Flags::flag_b);
+
+std::cout << flags.contains(Flags::flag_a) << std::endl; // true
+std::cout << flags.contains(Flags::flag_b) << std::endl; // true
+
+flags.remove(Flags::flag_a);
+
+std::cout << flags.contains(Flags::flag_a) << std::endl; // false
+std::cout << flags.contains(Flags::flag_b) << std::endl; // true
 ```
 
 ### Toggle Flags
