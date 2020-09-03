@@ -84,9 +84,15 @@ TEST_F(BitflagsTest, OperatorOr) {
 }
 
 TEST_F(BitflagsTest, OperatorXor) {
-    EXPECT_EQ(0x00000001U, Flags::flag_a);
-    EXPECT_EQ(0x00000011U, Flags::flag_a | Flags::flag_b);
-    EXPECT_EQ(0x00000111U, Flags::flag_a | Flags::flag_b | Flags::flag_c);
+    Flags flags = Flags::flag_a;
+
+    EXPECT_EQ(0x00000001U, flags);
+
+    flags ^= Flags::flag_a;
+    EXPECT_EQ(0x00000000U, flags);
+
+    flags ^= Flags::flag_a;
+    EXPECT_EQ(0x00000001U, flags);
 }
 
 TEST_F(BitflagsTest, Empty) {
