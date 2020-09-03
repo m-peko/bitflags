@@ -46,7 +46,7 @@ int main() {
 ## Table of Contents
 
 * [Getting Started](#getting-started)
-    * [What's BITFLAG macro?](#whats-a-bitflag-macro)
+    * [What's a BITFLAG macro?](#whats-a-bitflag-macro)
     * [Bits and Names](#bits-and-names)
     * [Bitwise Operators](#bitwise-operators)
     * [Is Specific Flag Set?](#is-specific-flag-set)
