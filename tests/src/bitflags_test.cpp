@@ -117,6 +117,9 @@ TEST_F(BitflagsTest, Contains) {
     EXPECT_TRUE(flags.contains(Flags::flag_a));
     EXPECT_TRUE(flags.contains(Flags::flag_b));
     EXPECT_FALSE(flags.contains(Flags::flag_c));
+
+    EXPECT_TRUE(flags.contains(Flags::none, Flags::flag_a, Flags::flag_b));
+    EXPECT_FALSE(flags.contains(Flags::none, Flags::flag_a, Flags::flag_c));
 }
 
 TEST_F(BitflagsTest, Toggle) {
