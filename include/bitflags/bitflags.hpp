@@ -377,9 +377,7 @@ public:
      * @param rhs Flag to be set
      */
     constexpr void set(internal::flag<T> const& rhs) noexcept {
-        if (!contains(rhs)) {
-            curr_ ^= rhs;
-        }
+        curr_ |= rhs;
     }
 
     /**
@@ -388,9 +386,7 @@ public:
      * @param rhs Flag to be unset
      */
     constexpr void remove(internal::flag<T> const& rhs) noexcept {
-        if (contains(rhs)) {
-            curr_ ^= rhs;
-        }
+        curr_ &= rhs;
     }
 
     /**
