@@ -31,35 +31,35 @@
 #include <bitflags/bitflags.hpp>
 
 struct BitflagsTest : testing::Test {
-    struct Flags : bf::bitflags<Flags, uint32_t> {
-        using bitflags<Flags, uint32_t>::bitflags;
+    struct Flags : bf::bitflags<Flags, std::uint8_t> {
+        using bitflags<Flags, std::uint8_t>::bitflags;
 
-        BITFLAG(0x00000000, none);
-        BITFLAG(0x00000001, flag_a);
-        BITFLAG(0x00000010, flag_b);
-        BITFLAG(0x00000100, flag_c);
+        BITFLAG(0b0000, none);
+        BITFLAG(0b0001, flag_a);
+        BITFLAG(0b0010, flag_b);
+        BITFLAG(0b0100, flag_c);
     };
 };
 
 TEST_F(BitflagsTest, Bits) {
-    EXPECT_EQ(Flags::none.bits, 0x00000000U);
-    EXPECT_EQ(Flags::flag_a.bits, 0x00000001U);
-    EXPECT_EQ(Flags::flag_b.bits, 0x00000010U);
-    EXPECT_EQ(Flags::flag_c.bits, 0x00000100U);
+    EXPECT_EQ(0b0000U, Flags::none.bits);
+    EXPECT_EQ(0b0001U, Flags::flag_a.bits);
+    EXPECT_EQ(0b0010U, Flags::flag_b.bits);
+    EXPECT_EQ(0b0100U, Flags::flag_c.bits);
 }
 
 TEST_F(BitflagsTest, Name) {
-    EXPECT_STREQ(Flags::none.name.data(), "none");
-    EXPECT_STREQ(Flags::flag_a.name.data(), "flag_a");
-    EXPECT_STREQ(Flags::flag_b.name.data(), "flag_b");
-    EXPECT_STREQ(Flags::flag_c.name.data(), "flag_c");
+    EXPECT_STREQ("none", Flags::none.name.data());
+    EXPECT_STREQ("flag_a", Flags::flag_a.name.data());
+    EXPECT_STREQ("flag_b", Flags::flag_b.name.data());
+    EXPECT_STREQ("flag_c", Flags::flag_c.name.data());
 }
 
 TEST_F(BitflagsTest, CastToUnderlyingType) {
-    EXPECT_EQ(static_cast<Flags::underlying_type>(Flags::none), 0x00000000U);
-    EXPECT_EQ(static_cast<Flags::underlying_type>(Flags::flag_a), 0x00000001U);
-    EXPECT_EQ(static_cast<Flags::underlying_type>(Flags::flag_b), 0x00000010U);
-    EXPECT_EQ(static_cast<Flags::underlying_type>(Flags::flag_c), 0x00000100U);
+    EXPECT_EQ(0b0000U, static_cast<Flags::underlying_type>(Flags::none));
+    EXPECT_EQ(0b0001U, static_cast<Flags::underlying_type>(Flags::flag_a));
+    EXPECT_EQ(0b0010U, static_cast<Flags::underlying_type>(Flags::flag_b));
+    EXPECT_EQ(0b0100U, static_cast<Flags::underlying_type>(Flags::flag_c));
 }
 
 TEST_F(BitflagsTest, OperatorNot) {
@@ -79,20 +79,20 @@ TEST_F(BitflagsTest, OperatorAnd) {
 }
 
 TEST_F(BitflagsTest, OperatorOr) {
-    EXPECT_EQ(0x00000011U, Flags::flag_a | Flags::flag_b);
-    EXPECT_EQ(0x00000111U, Flags::flag_a | Flags::flag_b | Flags::flag_c);
+    EXPECT_EQ(0b0011U, Flags::flag_a | Flags::flag_b);
+    EXPECT_EQ(0b0111U, Flags::flag_a | Flags::flag_b | Flags::flag_c);
 }
 
 TEST_F(BitflagsTest, OperatorXor) {
     Flags flags = Flags::flag_a;
 
-    EXPECT_EQ(0x00000001U, flags);
+    EXPECT_EQ(0b0001U, flags);
 
     flags ^= Flags::flag_a;
-    EXPECT_EQ(0x00000000U, flags);
+    EXPECT_EQ(0b0000U, flags);
 
     flags ^= Flags::flag_a;
-    EXPECT_EQ(0x00000001U, flags);
+    EXPECT_EQ(0b0001U, flags);
 }
 
 TEST_F(BitflagsTest, Empty) {
