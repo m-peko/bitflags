@@ -31,8 +31,8 @@
 #include <bitflags/bitflags.hpp>
 
 struct BitflagsTest : testing::Test {
-    struct Flags : bf::bitflags<uint32_t> {
-        using bitflags<uint32_t>::bitflags;
+    struct Flags : bf::bitflags<Flags, uint32_t> {
+        using bitflags<Flags, uint32_t>::bitflags;
 
         BITFLAG(0x00000000, none);
         BITFLAG(0x00000001, flag_a);
