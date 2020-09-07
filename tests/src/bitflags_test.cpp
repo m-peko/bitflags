@@ -31,14 +31,13 @@
 #include <bitflags/bitflags.hpp>
 
 struct BitflagsTest : testing::Test {
-    struct Flags : bf::bitflags<Flags, std::uint8_t> {
-        using bitflags<Flags, std::uint8_t>::bitflags;
-
-        BITFLAG(0b0000, none);
-        BITFLAG(0b0001, flag_a);
-        BITFLAG(0b0010, flag_b);
-        BITFLAG(0b0100, flag_c);
-    };
+    BITFLAGS(
+        Flags, std::uint8_t,
+            BITFLAG(0b0000, none)
+            BITFLAG(0b0001, flag_a)
+            BITFLAG(0b0010, flag_b)
+            BITFLAG(0b0100, flag_c)
+    )
 };
 
 TEST_F(BitflagsTest, Bits) {

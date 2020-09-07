@@ -17,14 +17,13 @@ Single-header C++17 library for easily managing set of flags.
 ```cpp
 #include <bitflags/bitflags.hpp>
 
-struct Flags : bf::bitflags<Flags, std::uint8_t> {
-    using bitflags<Flags, std::uint8_t>::bitflags; // inherit constructors
-
-    BITFLAG(0b0000, none);
-    BITFLAG(0b0001, flag_a);
-    BITFLAG(0b0010, flag_b);
-    BITFLAG(0b0100, flag_c);
-};
+BITFLAGS(
+    Flags, std::uint8_t,
+        BITFLAG(0b0000, none)
+        BITFLAG(0b0001, flag_a)
+        BITFLAG(0b0010, flag_b)
+        BITFLAG(0b0100, flag_c)
+)
 
 int main() {
     Flags flags = Flags::flag_a | Flags::flag_b;
@@ -46,6 +45,7 @@ int main() {
 ## Table of Contents
 
 * [Getting Started](#getting-started)
+    * [What's a BITFLAGS macro?](#whats-a-bitflags-macro)
     * [What's a BITFLAG macro?](#whats-a-bitflag-macro)
     * [Bits and Names](#bits-and-names)
     * [Bitwise Operators](#bitwise-operators)
@@ -62,6 +62,31 @@ int main() {
 ## Getting Started
 
 `bitflags` is a single-header header-only C++17 library.
+
+### What's a BITFLAGS macro?
+
+`BITFLAGS` macro is a helper that hides kind of "ugly" declaration syntax of creating a `struct` that contains all the flags. In other words, following code snippet:
+
+```cpp
+BITFLAGS(
+    Flags, std::uint8_t,
+        BITFLAG(0b0000, none)
+        BITFLAG(0b0001, flag_a)
+        BITFLAG(0b0010, flag_b)
+        BITFLAG(0b0100, flag_c)
+)
+```
+
+expands to:
+
+```cpp
+struct Flags : bf::bitflags<Flags, std::uint8_t> {
+    using bitflags<Flags, std::uint8_t>::bitflags; // inherit constructors
+
+    BITFLAG(0b0000, none)
+    // ...
+};
+```
 
 ### What's a BITFLAG macro?
 
@@ -92,13 +117,12 @@ struct Flags : bf::bitflags<Flags, std::uint8_t> {
 Once the flags are specified, it is possible to get bits representing each flag as well as string representation of each flag:
 
 ```cpp
-struct Flags : bf::bitflags<Flags, std::uint8_t> {
-    using bitflags<Flags, std::uint8_t>::bitflags;
-
-    BITFLAG(0b0000, none);
-    BITFLAG(0b0001, flag_a);
-    BITFLAG(0b0010, flag_b);
-};
+BITFLAGS(
+    Flags, std::uint8_t,
+        BITFLAG(0b0000, none)
+        BITFLAG(0b0001, flag_a)
+        BITFLAG(0b0010, flag_b)
+)
 
 std::cout << Flags::flag_a.bits << " - " << Flags::flag_a.name << std::endl;
 ```
@@ -119,13 +143,12 @@ In case we want to check whether specific flag is set or not, we have 2 options:
 1. use AND operator
 
 ```cpp
-struct Flags : bf::bitflags<Flags, std::uint8_t> {
-    using bitflags<Flags, std::uint8_t>::bitflags;
-
-    BITFLAG(0b0000, none);
-    BITFLAG(0b0001, flag_a);
-    BITFLAG(0b0010, flag_b);
-};
+BITFLAGS(
+    Flags, std::uint8_t,
+        BITFLAG(0b0000, none)
+        BITFLAG(0b0001, flag_a)
+        BITFLAG(0b0010, flag_b)
+)
 
 Flags flags = Flags::flag_a;
 
@@ -136,14 +159,13 @@ std::cout << static_cast<bool>(flags & Flags::flag_b) << std::endl; // false
 2. use `contains` member function
 
 ```cpp
-struct Flags : bf::bitflags<Flags, std::uint8_t> {
-    using bitflags<Flags, std::uint8_t>::bitflags;
-
-    BITFLAG(0b0000, none);
-    BITFLAG(0b0001, flag_a);
-    BITFLAG(0b0010, flag_b);
-    BITFLAG(0b0100, flag_c);
-};
+BITFLAGS(
+    Flags, std::uint8_t,
+        BITFLAG(0b0000, none)
+        BITFLAG(0b0001, flag_a)
+        BITFLAG(0b0010, flag_b)
+        BITFLAG(0b0100, flag_c)
+)
 
 Flags flags_1 = Flags::flag_a;
 
@@ -163,13 +185,12 @@ Following member functions are available for setting all the flags or setting no
 1. `all` / `is_all`
 
 ```cpp
-struct Flags : bf::bitflags<Flags, std::uint8_t> {
-    using bitflags<Flags, std::uint8_t>::bitflags;
-
-    BITFLAG(0b0000, none);
-    BITFLAG(0b0001, flag_a);
-    BITFLAG(0b0010, flag_b);
-};
+BITFLAGS(
+    Flags, std::uint8_t,
+        BITFLAG(0b0000, none)
+        BITFLAG(0b0001, flag_a)
+        BITFLAG(0b0010, flag_b)
+)
 
 Flags flags = Flags::all();
 
@@ -182,13 +203,12 @@ std::cout << flags.is_empty() << std::endl;              // false
 2. `empty` / `is_empty`
 
 ```cpp
-struct Flags : bf::bitflags<Flags, std::uint8_t> {
-    using bitflags<Flags, std::uint8_t>::bitflags;
-
-    BITFLAG(0b0000, none);
-    BITFLAG(0b0001, flag_a);
-    BITFLAG(0b0010, flag_b);
-};
+BITFLAGS(
+    Flags, std::uint8_t,
+        BITFLAG(0b0000, none)
+        BITFLAG(0b0001, flag_a)
+        BITFLAG(0b0010, flag_b)
+)
 
 Flags flags = Flags::empty();
 
@@ -203,13 +223,12 @@ std::cout << flags.is_empty() << std::endl;              // true
 Not only that one can set and remove specific flag by using bitwise operators, but there are also special member functions `set` and `remove` that have the same purpose.
 
 ```cpp
-struct Flags : bf::bitflags<Flags, std::uint8_t> {
-    using bitflags<Flags, std::uint8_t>::bitflags;
-
-    BITFLAG(0b0000, none);
-    BITFLAG(0b0001, flag_a);
-    BITFLAG(0b0010, flag_b);
-};
+BITFLAGS(
+    Flags, std::uint8_t,
+        BITFLAG(0b0000, none)
+        BITFLAG(0b0001, flag_a)
+        BITFLAG(0b0010, flag_b)
+)
 
 Flags flags = Flags::empty();
 
@@ -233,13 +252,12 @@ std::cout << flags.contains(Flags::flag_b) << std::endl; // true
 It is possible to toggle specific flag, i.e. if the flag is not already set, it will be set. On the other hand, if the flag is already set, it will be unset.
 
 ```cpp
-struct Flags : bf::bitflags<Flags, std::uint8_t> {
-    using bitflags<Flags, std::uint8_t>::bitflags;
-
-    BITFLAG(0b0000, none);
-    BITFLAG(0b0001, flag_a);
-    BITFLAG(0b0010, flag_b);
-};
+BITFLAGS(
+    Flags, std::uint8_t,
+        BITFLAG(0b0000, none)
+        BITFLAG(0b0001, flag_a)
+        BITFLAG(0b0010, flag_b)
+)
 
 Flags flags = Flags::flag_a;
 
@@ -257,14 +275,13 @@ std::cout << flags.contains(Flags::flag_b) << std::endl; // true
 In order to clear all the flags currently set, one can use `clear` member function.
 
 ```cpp
-struct Flags : bf::bitflags<Flags, std::uint8_t> {
-    using bitflags<Flags, std::uint8_t>::bitflags;
-
-    BITFLAG(0b0000, none);
-    BITFLAG(0b0001, flag_a);
-    BITFLAG(0b0010, flag_b);
-    BITFLAG(0b0100, flag_c);
-};
+BITFLAGS(
+    Flags, std::uint8_t,
+        BITFLAG(0b0000, none)
+        BITFLAG(0b0001, flag_a)
+        BITFLAG(0b0010, flag_b)
+        BITFLAG(0b0100, flag_c)
+)
 
 Flags flags = Flags::flag_a | Flags::flag_b;
 

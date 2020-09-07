@@ -419,7 +419,13 @@ private:
 
 } // bf
 
+#define BITFLAGS(NAME, TYPE, ...)             \
+    struct NAME : bf::bitflags<NAME, TYPE> {  \
+        using bitflags<NAME, TYPE>::bitflags; \
+        __VA_ARGS__                           \
+    };
+
 #define BITFLAG(BITS, NAME) \
-    static constexpr flag NAME{ BITS, #NAME }
+    static constexpr flag NAME{ BITS, #NAME };
 
 #endif // BITFLAGS_HPP
