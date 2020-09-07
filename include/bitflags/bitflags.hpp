@@ -41,19 +41,13 @@ template <typename CrtpT, typename T>
 struct flag;
 
 /**
- * Bitwise operators overloads
+ * Comparison operators overloads
  *
- *     T <op> flag<CrtpT, T>
+ *     flag<CrtpT, T> <op> flag<CrtpT, T>
  */
 
 template <typename CrtpT, typename T>
-[[nodiscard]] constexpr T operator&(T const& lhs, flag<CrtpT, T> const& rhs) noexcept;
-
-template <typename CrtpT, typename T>
-[[nodiscard]] constexpr T operator|(T const& lhs, flag<CrtpT, T> const& rhs) noexcept;
-
-template <typename CrtpT, typename T>
-[[nodiscard]] constexpr T operator^(T const& lhs, flag<CrtpT, T> const& rhs) noexcept;
+[[nodiscard]] constexpr bool operator==(flag<CrtpT, T> const& lhs, flag<CrtpT, T> const& rhs) noexcept;
 
 /**
  * Bitwise operators overloads
@@ -64,16 +58,16 @@ template <typename CrtpT, typename T>
  */
 
 template <typename CrtpT, typename T>
-[[nodiscard]] constexpr T operator~(flag<CrtpT, T> const& rhs) noexcept;
+[[nodiscard]] constexpr flag<CrtpT, T> operator~(flag<CrtpT, T> const& rhs) noexcept;
 
 template <typename CrtpT, typename T>
-[[nodiscard]] constexpr T operator&(flag<CrtpT, T> const& lhs, flag<CrtpT, T> const& rhs) noexcept;
+[[nodiscard]] constexpr flag<CrtpT, T> operator&(flag<CrtpT, T> const& lhs, flag<CrtpT, T> const& rhs) noexcept;
 
 template <typename CrtpT, typename T>
-[[nodiscard]] constexpr T operator|(flag<CrtpT, T> const& lhs, flag<CrtpT, T> const& rhs) noexcept;
+[[nodiscard]] constexpr flag<CrtpT, T> operator|(flag<CrtpT, T> const& lhs, flag<CrtpT, T> const& rhs) noexcept;
 
 template <typename CrtpT, typename T>
-[[nodiscard]] constexpr T operator^(flag<CrtpT, T> const& lhs, flag<CrtpT, T> const& rhs) noexcept;
+[[nodiscard]] constexpr flag<CrtpT, T> operator^(flag<CrtpT, T> const& lhs, flag<CrtpT, T> const& rhs) noexcept;
 
 /**
  * class flag
@@ -108,32 +102,16 @@ struct flag {
         return bits;
     }
 
-    [[nodiscard]] constexpr bool operator==(T rhs) const noexcept {
-        return bits == rhs;
-    }
-
-    [[nodiscard]] constexpr bool operator==(flag const& rhs) const noexcept {
-        return bits == rhs.bits &&
-               name == rhs.name;
-    }
-
     /**
-     * Bitwise operators overloads
+     * Comparison operators overloads
      *
-     *     T <op> flag<CrtpT, T>
+     *     flag<CrtpT, T> <op> flag<CrtpT, T>
      */
 
-    [[nodiscard]] friend constexpr T operator&(T const& lhs, flag const& rhs) noexcept {
-        return lhs & rhs.bits;
+    [[nodiscard]] friend constexpr bool operator==(flag const& lhs, flag const& rhs) noexcept {
+        return lhs.bits == rhs.bits;
     }
 
-    [[nodiscard]] friend constexpr T operator|(T const& lhs, flag const& rhs) noexcept {
-        return lhs | rhs.bits;
-    }
-
-    [[nodiscard]] friend constexpr T operator^(T const& lhs, flag const& rhs) noexcept {
-        return lhs ^ rhs.bits;
-    }
 
     /**
      * Bitwise operators overloads
@@ -145,19 +123,19 @@ struct flag {
      *     flag<CrtpT, T> <op>= flag<CrtpT, T>
      */
 
-    [[nodiscard]] friend constexpr T operator~(flag const& rhs) noexcept {
+    [[nodiscard]] friend constexpr flag operator~(flag const& rhs) noexcept {
         return ~rhs.bits;
     }
 
-    [[nodiscard]] friend constexpr T operator&(flag const& lhs, flag const& rhs) noexcept {
+    [[nodiscard]] friend constexpr flag operator&(flag const& lhs, flag const& rhs) noexcept {
         return lhs.bits & rhs.bits;
     }
 
-    [[nodiscard]] friend constexpr T operator|(flag const& lhs, flag const& rhs) noexcept {
+    [[nodiscard]] friend constexpr flag operator|(flag const& lhs, flag const& rhs) noexcept {
         return lhs.bits | rhs.bits;
     }
 
-    [[nodiscard]] friend constexpr T operator^(flag const& lhs, flag const& rhs) noexcept {
+    [[nodiscard]] friend constexpr flag operator^(flag const& lhs, flag const& rhs) noexcept {
         return lhs.bits ^ rhs.bits;
     }
 
@@ -272,19 +250,19 @@ public:
      *     bitflags<CrtpT, T> <op>= flag<CrtpT, T>
      */
 
-    [[nodiscard]] friend constexpr T operator~(bitflags const& rhs) noexcept {
+    [[nodiscard]] friend constexpr bitflags operator~(bitflags const& rhs) noexcept {
         return ~rhs.curr_;
     }
 
-    [[nodiscard]] friend constexpr T operator&(bitflags const& lhs, internal::flag<CrtpT, T> const& rhs) noexcept {
+    [[nodiscard]] friend constexpr bitflags operator&(bitflags const& lhs, internal::flag<CrtpT, T> const& rhs) noexcept {
         return lhs.curr_ & rhs;
     }
 
-    [[nodiscard]] friend constexpr T operator|(bitflags const& lhs, internal::flag<CrtpT, T> const& rhs) noexcept {
+    [[nodiscard]] friend constexpr bitflags operator|(bitflags const& lhs, internal::flag<CrtpT, T> const& rhs) noexcept {
         return lhs.curr_ | rhs;
     }
 
-    [[nodiscard]] friend constexpr T operator^(bitflags const& lhs, internal::flag<CrtpT, T> const& rhs) noexcept {
+    [[nodiscard]] friend constexpr bitflags operator^(bitflags const& lhs, internal::flag<CrtpT, T> const& rhs) noexcept {
         return lhs.curr_ ^ rhs;
     }
 
@@ -317,7 +295,7 @@ public:
      *
      * @return Empty set of flags
      */
-    [[nodiscard]] static constexpr T empty() noexcept {
+    [[nodiscard]] static constexpr internal::flag<CrtpT, T> empty() noexcept {
         return T{};
     }
 
@@ -326,7 +304,7 @@ public:
      *
      * @return Set of all defined flags
      */
-    [[nodiscard]] static constexpr T all() noexcept {
+    [[nodiscard]] static constexpr internal::flag<CrtpT, T> all() noexcept {
         return ~T{};
     }
 
@@ -358,7 +336,7 @@ public:
      *         current set of flags, otherwise false
      */
     [[nodiscard]] constexpr bool contains(internal::flag<CrtpT, T> const& rhs) const noexcept {
-        return curr_ & rhs || rhs == empty();
+        return static_cast<T>(curr_ & rhs) || rhs == empty();
     }
 
     /**
