@@ -2,7 +2,7 @@
 
 <img src="img/logo.png" height="120px"/>
 
-Single-header C++17 library for easily managing set of flags.
+Single-header C++17 library for easily managing type-safe set of flags.
 
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/m-peko/bitflags/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/m-peko/bitflags.svg?branch=master)](https://travis-ci.org/m-peko/bitflags)
