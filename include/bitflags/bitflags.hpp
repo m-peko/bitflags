@@ -369,7 +369,7 @@ public:
      * @param rhs Flag to be unset
      */
     constexpr void remove(internal::flag<CrtpT, T> const& rhs) noexcept {
-        curr_ &= rhs;
+        curr_ &= ~rhs;
     }
 
     /**
