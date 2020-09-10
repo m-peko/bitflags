@@ -155,6 +155,15 @@ struct flag {
     }
 };
 
+template <typename T>
+constexpr T shift(int const offset) {
+    if (offset < 0) {
+        return static_cast<T>(0);
+    } else {
+        return static_cast<T>(1U << offset);
+    }
+}
+
 } // internal
 
 template <typename CrtpT, typename T>
@@ -397,13 +406,15 @@ private:
 
 } // bf
 
-#define BITFLAGS(NAME, TYPE, ...)             \
+#define BEGIN_BITFLAGS(NAME, TYPE)            \
     struct NAME : bf::bitflags<NAME, TYPE> {  \
         using bitflags<NAME, TYPE>::bitflags; \
-        __VA_ARGS__                           \
+        static constexpr int offset__ = __LINE__;
+
+#define END_BITFLAGS() \
     };
 
-#define BITFLAG(BITS, NAME) \
-    static constexpr flag NAME{ BITS, #NAME };
+#define FLAG(NAME) \
+    static constexpr flag NAME{ bf::internal::shift<underlying_type>(__LINE__ - offset__ - 2), #NAME };
 
 #endif // BITFLAGS_HPP
