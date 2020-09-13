@@ -37,45 +37,45 @@ namespace bf {
 
 namespace internal {
 
-template <typename CrtpT, typename T>
+template <typename TagT, typename T>
 struct flag;
 
 /**
  * Comparison operators overloads
  *
- *     flag<CrtpT, T> <op> flag<CrtpT, T>
+ *     flag<TagT, T> <op> flag<TagT, T>
  */
 
-template <typename CrtpT, typename T>
-[[nodiscard]] constexpr bool operator==(flag<CrtpT, T> const& lhs, flag<CrtpT, T> const& rhs) noexcept;
+template <typename TagT, typename T>
+[[nodiscard]] constexpr bool operator==(flag<TagT, T> const& lhs, flag<TagT, T> const& rhs) noexcept;
 
 /**
  * Bitwise operators overloads
  *
- *     <op> flag<CrtpT, T>
+ *     <op> flag<TagT, T>
  *
- *     flag<CrtpT, T> <op> flag<CrtpT, T>
+ *     flag<TagT, T> <op> flag<TagT, T>
  */
 
-template <typename CrtpT, typename T>
-[[nodiscard]] constexpr flag<CrtpT, T> operator~(flag<CrtpT, T> const& rhs) noexcept;
+template <typename TagT, typename T>
+[[nodiscard]] constexpr flag<TagT, T> operator~(flag<TagT, T> const& rhs) noexcept;
 
-template <typename CrtpT, typename T>
-[[nodiscard]] constexpr flag<CrtpT, T> operator&(flag<CrtpT, T> const& lhs, flag<CrtpT, T> const& rhs) noexcept;
+template <typename TagT, typename T>
+[[nodiscard]] constexpr flag<TagT, T> operator&(flag<TagT, T> const& lhs, flag<TagT, T> const& rhs) noexcept;
 
-template <typename CrtpT, typename T>
-[[nodiscard]] constexpr flag<CrtpT, T> operator|(flag<CrtpT, T> const& lhs, flag<CrtpT, T> const& rhs) noexcept;
+template <typename TagT, typename T>
+[[nodiscard]] constexpr flag<TagT, T> operator|(flag<TagT, T> const& lhs, flag<TagT, T> const& rhs) noexcept;
 
-template <typename CrtpT, typename T>
-[[nodiscard]] constexpr flag<CrtpT, T> operator^(flag<CrtpT, T> const& lhs, flag<CrtpT, T> const& rhs) noexcept;
+template <typename TagT, typename T>
+[[nodiscard]] constexpr flag<TagT, T> operator^(flag<TagT, T> const& lhs, flag<TagT, T> const& rhs) noexcept;
 
 /**
- * class flag
+ * struct flag
  *
  * Represents a single flag in a collection of multiple flags.
- * It is for internal use only.
+ * This structure is for internal use only.
  */
-template <typename CrtpT, typename T = uint8_t>
+template <typename TagT, typename T = uint8_t>
 struct flag {
     T bits;
     std::string_view name;
@@ -105,7 +105,7 @@ struct flag {
     /**
      * Comparison operators overloads
      *
-     *     flag<CrtpT, T> <op> flag<CrtpT, T>
+     *     flag<TagT, T> <op> flag<TagT, T>
      */
 
     [[nodiscard]] friend constexpr bool operator==(flag const& lhs, flag const& rhs) noexcept {
@@ -116,11 +116,11 @@ struct flag {
     /**
      * Bitwise operators overloads
      *
-     *     <op> flag<CrtpT, T>
+     *     <op> flag<TagT, T>
      *
-     *     flag<CrtpT, T> <op> flag<CrtpT, T>
+     *     flag<TagT, T> <op> flag<TagT, T>
      *
-     *     flag<CrtpT, T> <op>= flag<CrtpT, T>
+     *     flag<TagT, T> <op>= flag<TagT, T>
      */
 
     [[nodiscard]] friend constexpr flag operator~(flag const& rhs) noexcept {
@@ -155,6 +155,38 @@ struct flag {
     }
 };
 
+/**
+ * struct min
+ *
+ * Provides member typedef type which is defined as minimal unsigned
+ * integral type capable of storing N integers.
+ * This structure is for internal use only.
+ */
+template <std::size_t N>
+struct min {
+    using type = typename std::conditional_t<
+        (N <= 8), std::uint8_t,
+        typename std::conditional_t<
+            (N <= 16), std::uint16_t,
+            typename std::conditional_t<
+                (N <= 32), std::uint32_t, std::uint64_t
+            >
+        >
+    >;
+};
+
+template <std::size_t N>
+using min_t = typename min<N>::type;
+
+/**
+ * Shifts integer of type T by specified offset.
+ * If the offset is less than 0, 0 is returned.
+ * This function is for internal use only.
+ *
+ * @param offset Offset to be used for shifting
+ *
+ * @return Result
+ */
 template <typename T>
 constexpr T shift(int const offset) {
     if (offset < 0) {
@@ -166,37 +198,37 @@ constexpr T shift(int const offset) {
 
 } // internal
 
-template <typename CrtpT, typename T>
+template <typename ImplT, typename T>
 class bitflags;
 
 /**
  * Bitwise operators overloads
  *
- *     <op> bitflags<CrtpT, T>
+ *     <op> bitflags<ImplT, T>
  *
- *     bitflags<CrtpT, T> <op> flag<CrtpT, T>
+ *     bitflags<ImplT, T> <op> flag<ImplT, T>
  */
 
-template <typename CrtpT, typename T>
-[[nodiscard]] constexpr T operator~(bitflags<CrtpT, T> const& rhs) noexcept;
+template <typename ImplT, typename T>
+[[nodiscard]] constexpr T operator~(bitflags<ImplT, T> const& rhs) noexcept;
 
-template <typename CrtpT, typename T>
-[[nodiscard]] constexpr T operator&(bitflags<CrtpT, T> const& lhs, internal::flag<CrtpT, T> const& rhs) noexcept;
+template <typename ImplT, typename T>
+[[nodiscard]] constexpr T operator&(bitflags<ImplT, T> const& lhs, internal::flag<ImplT, T> const& rhs) noexcept;
 
-template <typename CrtpT, typename T>
-[[nodiscard]] constexpr T operator|(bitflags<CrtpT, T> const& lhs, internal::flag<CrtpT, T> const& rhs) noexcept;
+template <typename ImplT, typename T>
+[[nodiscard]] constexpr T operator|(bitflags<ImplT, T> const& lhs, internal::flag<ImplT, T> const& rhs) noexcept;
 
-template <typename CrtpT, typename T>
-[[nodiscard]] constexpr T operator^(bitflags<CrtpT, T> const& lhs, internal::flag<CrtpT, T> const& rhs) noexcept;
+template <typename ImplT, typename T>
+[[nodiscard]] constexpr T operator^(bitflags<ImplT, T> const& lhs, internal::flag<ImplT, T> const& rhs) noexcept;
 
 /**
  * class bitflags
  *
- * Represents a typesafe bitmask flag generator. It can be used as a base class that
- * manages a set of flags. The flags should only be defined for integral types.
+ * Represents a typesafe bitmask flag generator that manages a set of flags.
+ * The flags should only be defined for integral types.
  */
-template <typename CrtpT, typename T = uint8_t>
-class bitflags {
+template <typename ImplT, typename T = internal::min_t<ImplT::end_ - ImplT::begin_ + 1>>
+class bitflags : public ImplT {
 public:
     using underlying_type = T;
 
@@ -204,11 +236,11 @@ public:
     constexpr bitflags(bitflags&& rhs) = default;
     constexpr bitflags(bitflags const& rhs) = default;
 
-    constexpr bitflags(internal::flag<CrtpT, T>&& rhs) noexcept
+    constexpr bitflags(internal::flag<ImplT, T>&& rhs) noexcept
         : curr_(std::move(rhs))
     {}
 
-    constexpr bitflags(internal::flag<CrtpT, T> const& rhs) noexcept
+    constexpr bitflags(internal::flag<ImplT, T> const& rhs) noexcept
         : curr_(rhs)
     {}
 
@@ -229,12 +261,12 @@ public:
         return *this;
     }
 
-    bitflags& operator=(internal::flag<CrtpT, T>&& rhs) noexcept {
+    bitflags& operator=(internal::flag<ImplT, T>&& rhs) noexcept {
         curr_ = std::move(rhs);
         return *this;
     }
 
-    bitflags& operator=(internal::flag<CrtpT, T> const& rhs) noexcept {
+    bitflags& operator=(internal::flag<ImplT, T> const& rhs) noexcept {
         curr_ = rhs;
         return *this;
     }
@@ -245,47 +277,47 @@ public:
         return curr_.bits;
     }
 
-    [[nodiscard]] constexpr bool operator==(internal::flag<CrtpT, T> const& rhs) const noexcept {
+    [[nodiscard]] constexpr bool operator==(internal::flag<ImplT, T> const& rhs) const noexcept {
         return curr_ == rhs;
     }
 
     /**
      * Bitwise operators overloads
      *
-     *     <op> bitflags<CrtpT, T>
+     *     <op> bitflags<ImplT, T>
      *
-     *     bitflags<CrtpT, T> <op> flag<CrtpT, T>
+     *     bitflags<ImplT, T> <op> flag<ImplT, T>
      *
-     *     bitflags<CrtpT, T> <op>= flag<CrtpT, T>
+     *     bitflags<ImplT, T> <op>= flag<ImplT, T>
      */
 
     [[nodiscard]] friend constexpr bitflags operator~(bitflags const& rhs) noexcept {
         return ~rhs.curr_;
     }
 
-    [[nodiscard]] friend constexpr bitflags operator&(bitflags const& lhs, internal::flag<CrtpT, T> const& rhs) noexcept {
+    [[nodiscard]] friend constexpr bitflags operator&(bitflags const& lhs, internal::flag<ImplT, T> const& rhs) noexcept {
         return lhs.curr_ & rhs;
     }
 
-    [[nodiscard]] friend constexpr bitflags operator|(bitflags const& lhs, internal::flag<CrtpT, T> const& rhs) noexcept {
+    [[nodiscard]] friend constexpr bitflags operator|(bitflags const& lhs, internal::flag<ImplT, T> const& rhs) noexcept {
         return lhs.curr_ | rhs;
     }
 
-    [[nodiscard]] friend constexpr bitflags operator^(bitflags const& lhs, internal::flag<CrtpT, T> const& rhs) noexcept {
+    [[nodiscard]] friend constexpr bitflags operator^(bitflags const& lhs, internal::flag<ImplT, T> const& rhs) noexcept {
         return lhs.curr_ ^ rhs;
     }
 
-    constexpr bitflags& operator&=(internal::flag<CrtpT, T> const& rhs) noexcept {
+    constexpr bitflags& operator&=(internal::flag<ImplT, T> const& rhs) noexcept {
         curr_ &= rhs;
         return *this;
     }
 
-    constexpr bitflags& operator|=(internal::flag<CrtpT, T> const& rhs) noexcept {
+    constexpr bitflags& operator|=(internal::flag<ImplT, T> const& rhs) noexcept {
         curr_ |= rhs;
         return *this;
     }
 
-    constexpr bitflags& operator^=(internal::flag<CrtpT, T> const& rhs) noexcept {
+    constexpr bitflags& operator^=(internal::flag<ImplT, T> const& rhs) noexcept {
         curr_ ^= rhs;
         return *this;
     }
@@ -304,7 +336,7 @@ public:
      *
      * @return Empty set of flags
      */
-    [[nodiscard]] static constexpr internal::flag<CrtpT, T> empty() noexcept {
+    [[nodiscard]] static constexpr internal::flag<ImplT, T> empty() noexcept {
         return T{};
     }
 
@@ -313,7 +345,7 @@ public:
      *
      * @return Set of all defined flags
      */
-    [[nodiscard]] static constexpr internal::flag<CrtpT, T> all() noexcept {
+    [[nodiscard]] static constexpr internal::flag<ImplT, T> all() noexcept {
         return ~T{};
     }
 
@@ -344,7 +376,7 @@ public:
      * @return True if the specified flags is contained within the
      *         current set of flags, otherwise false
      */
-    [[nodiscard]] constexpr bool contains(internal::flag<CrtpT, T> const& rhs) const noexcept {
+    [[nodiscard]] constexpr bool contains(internal::flag<ImplT, T> const& rhs) const noexcept {
         return static_cast<T>(curr_ & rhs) || rhs == empty();
     }
 
@@ -359,7 +391,7 @@ public:
      *         current set of flags, otherwise false
      */
     template <typename ... U>
-    [[nodiscard]] constexpr bool contains(internal::flag<CrtpT, T> const& rhs_1, U const& ... rhs_n) const noexcept {
+    [[nodiscard]] constexpr bool contains(internal::flag<ImplT, T> const& rhs_1, U const& ... rhs_n) const noexcept {
         return contains(rhs_1) && contains(rhs_n...);
     }
 
@@ -368,7 +400,7 @@ public:
      *
      * @param rhs Flag to be set
      */
-    constexpr void set(internal::flag<CrtpT, T> const& rhs) noexcept {
+    constexpr void set(internal::flag<ImplT, T> const& rhs) noexcept {
         curr_ |= rhs;
     }
 
@@ -377,7 +409,7 @@ public:
      *
      * @param rhs Flag to be unset
      */
-    constexpr void remove(internal::flag<CrtpT, T> const& rhs) noexcept {
+    constexpr void remove(internal::flag<ImplT, T> const& rhs) noexcept {
         curr_ &= ~rhs;
     }
 
@@ -386,7 +418,7 @@ public:
      *
      * @param rhs Flag to be toggled
      */
-    constexpr void toggle(internal::flag<CrtpT, T> const& rhs) noexcept {
+    constexpr void toggle(internal::flag<ImplT, T> const& rhs) noexcept {
         curr_ ^= rhs;
     }
 
@@ -397,24 +429,30 @@ public:
         curr_ = T{};
     }
 
-protected:
-    using flag = internal::flag<CrtpT, T>;
-
 private:
-    internal::flag<CrtpT, T> curr_;
+    internal::flag<ImplT, T> curr_;
 };
 
 } // bf
 
-#define BEGIN_BITFLAGS(NAME, TYPE)            \
-    struct NAME : bf::bitflags<NAME, TYPE> {  \
-        using bitflags<NAME, TYPE>::bitflags; \
-        static constexpr int offset__ = __LINE__;
+#define BEGIN_BITFLAGS(NAME)                            \
+    template <typename T>                               \
+    struct NAME##Impl {                                 \
+        using flag = bf::internal::flag<NAME##Impl, T>; \
+        static constexpr int begin_ = __LINE__;
 
-#define END_BITFLAGS() \
-    };
+#define END_BITFLAGS(NAME)                    \
+        static constexpr int end_ = __LINE__; \
+    };                                        \
+    using NAME = bf::bitflags<                \
+        NAME##Impl<                           \
+            bf::bitflags<                     \
+                NAME##Impl<uint8_t>           \
+            >::underlying_type                \
+        >                                     \
+    >;                                        \
 
 #define FLAG(NAME) \
-    static constexpr flag NAME{ bf::internal::shift<underlying_type>(__LINE__ - offset__ - 2), #NAME };
+    static constexpr flag NAME{ bf::internal::shift<T>(__LINE__ - begin_ - 2), #NAME };
 
 #endif // BITFLAGS_HPP

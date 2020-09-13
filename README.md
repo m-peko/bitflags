@@ -17,12 +17,12 @@ Single-header header-only C++17 library for easily managing set of auto-generate
 ```cpp
 #include <bitflags/bitflags.hpp>
 
-BEGIN_BITFLAGS(Flags, std::uint8_t)
+BEGIN_BITFLAGS(Flags)
     FLAG(none)
     FLAG(flag_a)
     FLAG(flag_b)
     FLAG(flag_c)
-END_BITFLAGS()
+END_BITFLAGS(Flags)
 
 int main() {
     Flags flags = Flags::flag_a | Flags::flag_b;
@@ -65,19 +65,19 @@ int main() {
 
 In order to declare a set of auto-generated flags, there are few helper macros that hide kind of "ugly" declaration syntax and provide auto-generated value for each flag:
 
-* `BEGIN_BITFLAGS(NAME, TYPE)`
+* `BEGIN_BITFLAGS(NAME)`
     - `NAME` - name of set of flags
-    - `TYPE` - integral type suitable for absorbing specified number of flags
 
 * `FLAG(NAME)`
     - `NAME` - name of specific flag
 
-* `END_BITFLAGS`
+* `END_BITFLAGS(NAME)`
+    - `NAME` - name of set of flags
 
 Following snippet shows the use case of the above macros:
 
 ```cpp
-BEGIN_BITFLAGS(Flags, std::uint8_t)
+BEGIN_BITFLAGS(Flags)
     FLAG(none)
     FLAG(flag_a)
     FLAG(flag_b)
@@ -88,14 +88,22 @@ END_BITFLAGS()
 and is translated into:
 
 ```cpp
-struct Flags : bf::bitflags<Flags, std::uint8_t> {
-    using bitflags<Flags, std::uint8_t>::bitflags; // inherit constructors
-
+template <typename T>
+struct FlagsImpl {
+    using flag = bf::internal::flag<FlagsImpl, T>
     static constexpr flag none{ 0b0000, "none" };
     static constexpr flag flag_a{ 0b0001, "flag_a" };
     static constexpr flag flag_b{ 0b0010, "flag_b" };
     static constexpr flag flag_c{ 0b0100, "flag_c" };
 };
+
+using Flags = bf::bitflags<
+    FlagsImpl<
+        bf::bitflags<
+            FlagsImpl<uint8_t>
+        >::underlying_type
+    >
+>;
 ```
 
 ### Bits and Names
@@ -103,11 +111,11 @@ struct Flags : bf::bitflags<Flags, std::uint8_t> {
 Once the flags are specified, it is possible to get bits representing each flag as well as string representation of each flag:
 
 ```cpp
-BEGIN_BITFLAGS(Flags, std::uint8_t)
+BEGIN_BITFLAGS(Flags)
     FLAG(none)
     FLAG(flag_a)
     FLAG(flag_b)
-END_BITFLAGS()
+END_BITFLAGS(Flags)
 
 std::cout << Flags::flag_a.bits << " - " << Flags::flag_a.name << std::endl;
 ```
@@ -128,11 +136,11 @@ In case we want to check whether specific flag is set or not, we have 2 options:
 1. use AND operator
 
 ```cpp
-BEGIN_BITFLAGS(Flags, std::uint8_t)
+BEGIN_BITFLAGS(Flags)
     FLAG(none)
     FLAG(flag_a)
     FLAG(flag_b)
-END_BITFLAGS()
+END_BITFLAGS(Flags)
 
 Flags flags = Flags::flag_a;
 
@@ -143,12 +151,12 @@ std::cout << static_cast<bool>(flags & Flags::flag_b) << std::endl; // false
 2. use `contains` member function
 
 ```cpp
-BEGIN_BITFLAGS(Flags, std::uint8_t)
+BEGIN_BITFLAGS(Flags)
     FLAG(none)
     FLAG(flag_a)
     FLAG(flag_b)
     FLAG(flag_c)
-END_BITFLAGS()
+END_BITFLAGS(Flags)
 
 Flags flags_1 = Flags::flag_a;
 
@@ -168,11 +176,11 @@ Following member functions are available for setting all the flags or setting no
 1. `all` / `is_all`
 
 ```cpp
-BEGIN_BITFLAGS(Flags, std::uint8_t)
+BEGIN_BITFLAGS(Flags)
     FLAG(none)
     FLAG(flag_a)
     FLAG(flag_b)
-END_BITFLAGS()
+END_BITFLAGS(Flags)
 
 Flags flags = Flags::all();
 
@@ -185,11 +193,11 @@ std::cout << flags.is_empty() << std::endl;              // false
 2. `empty` / `is_empty`
 
 ```cpp
-BEGIN_BITFLAGS(Flags, std::uint8_t)
+BEGIN_BITFLAGS(Flags)
     FLAG(none)
     FLAG(flag_a)
     FLAG(flag_b)
-END_BITFLAGS()
+END_BITFLAGS(Flags)
 
 Flags flags = Flags::empty();
 
@@ -204,11 +212,11 @@ std::cout << flags.is_empty() << std::endl;              // true
 Not only that one can set and remove specific flag by using bitwise operators, but there are also special member functions `set` and `remove` that have the same purpose.
 
 ```cpp
-BEGIN_BITFLAGS(Flags, std::uint8_t)
+BEGIN_BITFLAGS(Flags)
     FLAG(none)
     FLAG(flag_a)
     FLAG(flag_b)
-END_BITFLAGS()
+END_BITFLAGS(Flags)
 
 Flags flags = Flags::empty();
 
@@ -232,11 +240,11 @@ std::cout << flags.contains(Flags::flag_b) << std::endl; // true
 It is possible to toggle specific flag, i.e. if the flag is not already set, it will be set. On the other hand, if the flag is already set, it will be unset.
 
 ```cpp
-BEGIN_BITFLAGS(Flags, std::uint8_t)
+BEGIN_BITFLAGS(Flags)
     FLAG(none)
     FLAG(flag_a)
     FLAG(flag_b)
-END_BITFLAGS()
+END_BITFLAGS(Flags)
 
 Flags flags = Flags::flag_a;
 
@@ -254,12 +262,12 @@ std::cout << flags.contains(Flags::flag_b) << std::endl; // true
 In order to clear all the flags currently set, one can use `clear` member function.
 
 ```cpp
-BEGIN_BITFLAGS(Flags, std::uint8_t)
+BEGIN_BITFLAGS(Flags)
     FLAG(none)
     FLAG(flag_a)
     FLAG(flag_b)
     FLAG(flag_c)
-END_BITFLAGS()
+END_BITFLAGS(Flags)
 
 Flags flags = Flags::flag_a | Flags::flag_b;
 
