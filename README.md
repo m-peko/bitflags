@@ -87,8 +87,8 @@ _So, why should I use `bitflags` library?_
 
 `bitflags` library provides you decently safe way of specifying your flags with 2 core features:
 
-- __auto-generated flag values__
-- __auto-detected underlying type__
+- __auto - generated flag values__
+- __auto - detected underlying type__
 
 ## Getting Started
 
