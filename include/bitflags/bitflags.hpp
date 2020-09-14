@@ -447,7 +447,7 @@ private:
     using NAME = bf::bitflags<                \
         NAME##Impl<                           \
             bf::bitflags<                     \
-                NAME##Impl<uint8_t>           \
+                NAME##Impl<std::uint8_t>      \
             >::underlying_type                \
         >                                     \
     >;                                        \
