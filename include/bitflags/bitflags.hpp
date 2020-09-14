@@ -49,6 +49,9 @@ struct flag;
 template <typename TagT, typename T>
 [[nodiscard]] constexpr bool operator==(flag<TagT, T> const& lhs, flag<TagT, T> const& rhs) noexcept;
 
+template <typename TagT, typename T>
+[[nodiscard]] constexpr bool operator!=(flag<TagT, T> const& lhs, flag<TagT, T> const& rhs) noexcept;
+
 /**
  * Bitwise operators overloads
  *
@@ -112,6 +115,9 @@ struct flag {
         return lhs.bits == rhs.bits;
     }
 
+    [[nodiscard]] friend constexpr bool operator!=(flag const& lhs, flag const& rhs) noexcept {
+        return lhs.bits != rhs.bits;
+    }
 
     /**
      * Bitwise operators overloads
@@ -279,6 +285,10 @@ public:
 
     [[nodiscard]] constexpr bool operator==(internal::flag<ImplT, T> const& rhs) const noexcept {
         return curr_ == rhs;
+    }
+
+    [[nodiscard]] constexpr bool operator!=(internal::flag<ImplT, T> const& rhs) const noexcept {
+        return curr_ != rhs;
     }
 
     /**
