@@ -100,7 +100,7 @@ struct FlagsImpl {
 using Flags = bf::bitflags<
     FlagsImpl<
         bf::bitflags<
-            FlagsImpl<uint8_t>
+            FlagsImpl<std::uint8_t>
         >::underlying_type
     >
 >;
