@@ -43,6 +43,7 @@ int main() {
 
 ## Table of Contents
 
+* [Motivation](#motivation)
 * [Getting Started](#getting-started)
     * [How to Declare Set of Flags?](#how-to-declare-set-of-flags)
     * [Bits and Names](#bits-and-names)
@@ -56,6 +57,38 @@ int main() {
 * [Compiler Compatibility](#compiler-compatibility)
 * [Contributing](#contributing)
 * [License](#license)
+
+## Motivation
+
+Inspiration for writing this `bitflags` library I got from the homonymous Rust's crate that you may find [here](https://docs.rs/bitflags/1.2.1/bitflags/).
+
+Some people may ask: __Why not just use `enum class` and assign binary literals?__
+
+Following example presents using `enum class` with `std::uint8_t` as underlying type (so that max number of flags is 9):
+
+```c++
+enum class Flags : std::uint8_t {
+    none   = 0b0000,
+    flag_a = 0b0001,
+    flag_b = 0b0010,
+    flag_c = 0b0010
+};
+```
+
+_Nothing is wrong with above usage, right?_
+
+Oh... you might not have noticed that both `Flags::flag_b` and `Flags::flag_c` have the same value assigned! That's the exact same mistake that developers make in everyday work... This mistake happened with `std::uint8_t` as underlying type but imagine how often would be mistakes if the underlying value is `std::uint32_t` or even `std::uint64_t`.
+
+_You got the point?_
+
+Assigning binary literals to flags is manual and error-prone process, especially if there is lots of flags and if developers change them over time.
+
+_So, why should I use `bitflags` library?_
+
+`bitflags` library provides you decently safe way of specifying your flags with 2 core features:
+
+- __auto-generated flag values__
+- __auto-detected underlying type__
 
 ## Getting Started
 
