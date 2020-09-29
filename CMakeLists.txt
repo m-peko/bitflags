@@ -96,7 +96,7 @@ if (NOT BITFLAGS_SUBPROJECT)
 
     write_basic_package_version_file (
         bitflags-config-version.cmake
-        VERSION ${PACKAGE_VERSION}
+        VERSION ${BITFLAGS_VERSION}
         COMPATIBILITY AnyNewerVersion
     )
 
