@@ -15,7 +15,7 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.12")
         bitflags
             VERSION ${BITFLAGS_VERSION}
             LANGUAGES CXX
-            HOMEPAGE_URL "https://github.com/m-peko/smart-enum"
+            HOMEPAGE_URL "https://github.com/m-peko/bitflags"
             DESCRIPTION ""
     )
 elseif (CMAKE_VERSION VERSION_GREATER_EQUAL "3.9")
@@ -92,29 +92,23 @@ if (NOT BITFLAGS_SUBPROJECT)
     include(CMakePackageConfigHelpers)
     include(GNUInstallDirs)
     
-    configure_package_config_file (
-        bitflags_config.cmake.in
-            ${CMAKE_CURRENT_BINARY_DIR}/bitflags_config.cmake
-            INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/bitflags
-    )
+    install (TARGETS bitflags EXPORT bitflags-config)
 
     write_basic_package_version_file (
-        bitflags_config_version.cmake
-            COMPATIBILITY AnyNewerVersion
+        bitflags-config-version.cmake
+        VERSION ${PACKAGE_VERSION}
+        COMPATIBILITY AnyNewerVersion
     )
 
-    install (TARGETS bitflags EXPORT bitflags_targets)
-
     install (
-        EXPORT bitflags_targets
-        FILE bitflags_targets.cmake
+        EXPORT bitflags-config
+        FILE bitflags-config.cmake
         NAMESPACE bitflags::
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/bitflags
     )
 
     install (
-        FILES ${CMAKE_CURRENT_BINARY_DIR}/bitflags_config.cmake
-              ${CMAKE_CURRENT_BINARY_DIR}/bitflags_config_version.cmake
+        FILES ${CMAKE_CURRENT_BINARY_DIR}/bitflags-config-version.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/bitflags
     )
 
