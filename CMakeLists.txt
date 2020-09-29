@@ -5,7 +5,7 @@ if (DEFINED PROJECT_NAME)
 endif ()
 
 set (BITFLAGS_VERSION_MAJOR 1)
-set (BITFLAGS_VERSION_MINOR 0)
+set (BITFLAGS_VERSION_MINOR 2)
 set (BITFLAGS_VERSION_PATCH 0)
 
 set (BITFLAGS_VERSION "${BITFLAGS_VERSION_MAJOR}.${BITFLAGS_VERSION_MINOR}.${BITFLAGS_VERSION_PATCH}")
@@ -89,6 +89,9 @@ if (BITFLAGS_BUILD_TESTS)
 endif ()
 
 if (NOT BITFLAGS_SUBPROJECT)
+    include(CMakePackageConfigHelpers)
+    include(GNUInstallDirs)
+    
     configure_package_config_file (
         bitflags_config.cmake.in
             ${CMAKE_CURRENT_BINARY_DIR}/bitflags_config.cmake
