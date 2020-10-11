@@ -31,6 +31,13 @@
 #include <bitflags/bitflags.hpp>
 
 struct BitflagsTest : testing::Test {
+    BEGIN_RAW_BITFLAGS(RawFlags)
+        RAW_FLAG(none)
+        RAW_FLAG(flag_a)
+        RAW_FLAG(flag_b)
+        RAW_FLAG(flag_c)
+    END_RAW_BITFLAGS(RawFlags)
+
     BEGIN_BITFLAGS(Flags)
         FLAG(none)
         FLAG(flag_a)
@@ -40,6 +47,13 @@ struct BitflagsTest : testing::Test {
 };
 
 TEST_F(BitflagsTest, Bits) {
+    // raw flags (without string representation)
+    EXPECT_EQ(0b0000U, RawFlags::none.bits);
+    EXPECT_EQ(0b0001U, RawFlags::flag_a.bits);
+    EXPECT_EQ(0b0010U, RawFlags::flag_b.bits);
+    EXPECT_EQ(0b0100U, RawFlags::flag_c.bits);
+
+    // flags (with string representation)
     EXPECT_EQ(0b0000U, Flags::none.bits);
     EXPECT_EQ(0b0001U, Flags::flag_a.bits);
     EXPECT_EQ(0b0010U, Flags::flag_b.bits);
@@ -54,6 +68,13 @@ TEST_F(BitflagsTest, Name) {
 }
 
 TEST_F(BitflagsTest, CastToUnderlyingType) {
+    // raw flags (without string representation)
+    EXPECT_EQ(0b0000U, static_cast<RawFlags::underlying_type>(RawFlags::none));
+    EXPECT_EQ(0b0001U, static_cast<RawFlags::underlying_type>(RawFlags::flag_a));
+    EXPECT_EQ(0b0010U, static_cast<RawFlags::underlying_type>(RawFlags::flag_b));
+    EXPECT_EQ(0b0100U, static_cast<RawFlags::underlying_type>(RawFlags::flag_c));
+
+    // flags (with string representation)
     EXPECT_EQ(0b0000U, static_cast<Flags::underlying_type>(Flags::none));
     EXPECT_EQ(0b0001U, static_cast<Flags::underlying_type>(Flags::flag_a));
     EXPECT_EQ(0b0010U, static_cast<Flags::underlying_type>(Flags::flag_b));
@@ -61,6 +82,14 @@ TEST_F(BitflagsTest, CastToUnderlyingType) {
 }
 
 TEST_F(BitflagsTest, OperatorNot) {
+    // raw flags (without string representation)
+    RawFlags raw_flags = ~RawFlags::none;
+
+    EXPECT_TRUE(raw_flags & RawFlags::flag_a);
+    EXPECT_TRUE(raw_flags & RawFlags::flag_b);
+    EXPECT_TRUE(raw_flags & RawFlags::flag_c);
+
+    // flags (with string representation)
     Flags flags = ~Flags::none;
 
     EXPECT_TRUE(flags & Flags::flag_a);
@@ -69,6 +98,14 @@ TEST_F(BitflagsTest, OperatorNot) {
 }
 
 TEST_F(BitflagsTest, OperatorAnd) {
+    // raw flags (without string representation)
+    RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b;
+
+    EXPECT_TRUE(raw_flags & RawFlags::flag_a);
+    EXPECT_TRUE(raw_flags & RawFlags::flag_b);
+    EXPECT_FALSE(raw_flags & RawFlags::flag_c);
+
+    // flags (with string representation)
     Flags flags = Flags::flag_a | Flags::flag_b;
 
     EXPECT_TRUE(flags & Flags::flag_a);
@@ -77,11 +114,28 @@ TEST_F(BitflagsTest, OperatorAnd) {
 }
 
 TEST_F(BitflagsTest, OperatorOr) {
+    // raw flags (without string representation)
+    EXPECT_EQ(0b0011U, RawFlags::flag_a | RawFlags::flag_b);
+    EXPECT_EQ(0b0111U, RawFlags::flag_a | RawFlags::flag_b | RawFlags::flag_c);
+
+    // flags (with string representation)
     EXPECT_EQ(0b0011U, Flags::flag_a | Flags::flag_b);
     EXPECT_EQ(0b0111U, Flags::flag_a | Flags::flag_b | Flags::flag_c);
 }
 
 TEST_F(BitflagsTest, OperatorXor) {
+    // raw flags (without string representation)
+    RawFlags raw_flags = RawFlags::flag_a;
+
+    EXPECT_EQ(0b0001U, raw_flags);
+
+    raw_flags ^= RawFlags::flag_a;
+    EXPECT_EQ(0b0000U, raw_flags);
+
+    raw_flags ^= RawFlags::flag_a;
+    EXPECT_EQ(0b0001U, raw_flags);
+
+    // flags (with string representation)
     Flags flags = Flags::flag_a;
 
     EXPECT_EQ(0b0001U, flags);
@@ -94,6 +148,16 @@ TEST_F(BitflagsTest, OperatorXor) {
 }
 
 TEST_F(BitflagsTest, Empty) {
+    // raw flags (without string representation)
+    RawFlags raw_flags = RawFlags::empty();
+
+    EXPECT_TRUE(raw_flags.is_empty());
+    EXPECT_FALSE(raw_flags.is_all());
+    EXPECT_FALSE(raw_flags & RawFlags::flag_a);
+    EXPECT_FALSE(raw_flags & RawFlags::flag_b);
+    EXPECT_FALSE(raw_flags & RawFlags::flag_c);
+
+    // flags (with string representation)
     Flags flags = Flags::empty();
 
     EXPECT_TRUE(flags.is_empty());
@@ -104,6 +168,16 @@ TEST_F(BitflagsTest, Empty) {
 }
 
 TEST_F(BitflagsTest, All) {
+    // raw flags (without string representation)
+    RawFlags raw_flags = RawFlags::all();
+
+    EXPECT_FALSE(raw_flags.is_empty());
+    EXPECT_TRUE(raw_flags.is_all());
+    EXPECT_TRUE(raw_flags & RawFlags::flag_a);
+    EXPECT_TRUE(raw_flags & RawFlags::flag_b);
+    EXPECT_TRUE(raw_flags & RawFlags::flag_c);
+
+    // flags (with string representation)
     Flags flags = Flags::all();
 
     EXPECT_FALSE(flags.is_empty());
@@ -114,6 +188,18 @@ TEST_F(BitflagsTest, All) {
 }
 
 TEST_F(BitflagsTest, Contains) {
+    // raw flags (without string representation)
+    RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b;
+
+    EXPECT_TRUE(raw_flags.contains(RawFlags::none));
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_a));
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_c));
+
+    EXPECT_TRUE(raw_flags.contains(RawFlags::none, RawFlags::flag_a, RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.contains(RawFlags::none, RawFlags::flag_a, RawFlags::flag_c));
+
+    // flags (with string representation)
     Flags flags = Flags::flag_a | Flags::flag_b;
 
     EXPECT_TRUE(flags.contains(Flags::none));
@@ -126,6 +212,21 @@ TEST_F(BitflagsTest, Contains) {
 }
 
 TEST_F(BitflagsTest, Set) {
+    // raw flags (without string representation)
+    RawFlags raw_flags = RawFlags::none;
+
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_a));
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_c));
+
+    raw_flags.set(RawFlags::flag_a);
+    raw_flags.set(RawFlags::flag_b);
+
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_a));
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_c));
+
+    // flags (with string representation)
     Flags flags = Flags::none;
 
     EXPECT_FALSE(flags.contains(Flags::flag_a));
@@ -141,6 +242,21 @@ TEST_F(BitflagsTest, Set) {
 }
 
 TEST_F(BitflagsTest, Remove) {
+    // raw flags (without string representation)
+    RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b | RawFlags::flag_c;
+
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_a));
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_b));
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_c));
+
+    raw_flags.remove(RawFlags::flag_a);
+    raw_flags.remove(RawFlags::flag_b);
+
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_a));
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_b));
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_c));
+
+    // flags (with string representation)
     Flags flags = Flags::flag_a | Flags::flag_b | Flags::flag_c;
 
     EXPECT_TRUE(flags.contains(Flags::flag_a));
@@ -156,6 +272,28 @@ TEST_F(BitflagsTest, Remove) {
 }
 
 TEST_F(BitflagsTest, Toggle) {
+    // raw flags (without string representation)
+    RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b;
+
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_a));
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_c));
+
+    raw_flags.toggle(RawFlags::flag_a);
+    raw_flags.toggle(RawFlags::flag_c);
+
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_a));
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_b));
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_c));
+
+    raw_flags.toggle(RawFlags::flag_a);
+    raw_flags.toggle(RawFlags::flag_b);
+
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_a));
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_b));
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_c));
+
+    // flags (with string representation)
     Flags flags = Flags::flag_a | Flags::flag_b;
 
     EXPECT_TRUE(flags.contains(Flags::flag_a));
@@ -178,6 +316,21 @@ TEST_F(BitflagsTest, Toggle) {
 }
 
 TEST_F(BitflagsTest, Clear) {
+    // raw flags (without string representation)
+    RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b;
+
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_a));
+    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_c));
+
+    raw_flags.clear();
+
+    EXPECT_TRUE(raw_flags.is_empty());
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_a));
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_c));
+
+    // flags (with string representation)
     Flags flags = Flags::flag_a | Flags::flag_b;
 
     EXPECT_TRUE(flags.contains(Flags::flag_a));
