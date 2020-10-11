@@ -61,10 +61,10 @@ TEST_F(BitflagsTest, Bits) {
 }
 
 TEST_F(BitflagsTest, Name) {
-    EXPECT_STREQ("none", Flags::none.name.data());
-    EXPECT_STREQ("flag_a", Flags::flag_a.name.data());
-    EXPECT_STREQ("flag_b", Flags::flag_b.name.data());
-    EXPECT_STREQ("flag_c", Flags::flag_c.name.data());
+    EXPECT_EQ("none", Flags::none.name);
+    EXPECT_EQ("flag_a", Flags::flag_a.name);
+    EXPECT_EQ("flag_b", Flags::flag_b.name);
+    EXPECT_EQ("flag_c", Flags::flag_c.name);
 }
 
 TEST_F(BitflagsTest, CastToUnderlyingType) {
