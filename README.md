@@ -45,6 +45,7 @@ int main() {
 
 * [Motivation](#motivation)
 * [Getting Started](#getting-started)
+    * [Raw flags vs flags](#raw-flags-vs-flags)
     * [How to Declare Set of Flags?](#how-to-declare-set-of-flags)
     * [Bits and Names](#bits-and-names)
     * [Bitwise Operators](#bitwise-operators)
@@ -94,9 +95,29 @@ _So, why should I use `bitflags` library?_
 
 `bitflags` is a single-header header-only C++17 library for easily managing set of auto-generated type-safe flags.
 
+### Raw flags vs flags?
+
+`bitflags` library provides you with 2 flag types:
+
+- __raw_flag__ without its string representation (sort of lightweight version)
+- __flag__ with its string representation
+
 ### How to Declare Set of Flags?
 
-In order to declare a set of auto-generated flags, there are few helper macros that hide kind of "ugly" declaration syntax and provide auto-generated value for each flag:
+In order to declare a set of auto-generated flags, there are few helper macros that hide kind of "ugly" declaration syntax and provide auto-generated value for each flag.
+
+Macros for creating set of raw flags, i.e. flags __without__ string representation:
+
+* `BEGIN_RAW_BITFLAGS(NAME)`
+    - `NAME` - name of set of raw flags
+
+* `RAW_FLAG(NAME)`
+    - `NAME` - name of specific raw flag
+
+* `END_RAW_BITFLAGS(NAME)`
+    - `NAME` - name of set of raw flags
+
+Macros for creating set of ordinary flags, i.e. flags __with__ string representation:
 
 * `BEGIN_BITFLAGS(NAME)`
     - `NAME` - name of set of flags
@@ -139,9 +160,25 @@ using Flags = bf::bitflags<
 >;
 ```
 
+Usage is basically the same for `raw_flag`s.
+
 ### Bits and Names
 
+While bits are part of both `raw_flag` and `flag`, names are part of `flag` type only.
+
 Once the flags are specified, it is possible to get bits representing each flag as well as string representation of each flag:
+
+```cpp
+BEGIN_RAW_BITFLAGS(RawFlags)
+    RAW_FLAG(none)
+    RAW_FLAG(flag_a)
+    RAW_FLAG(flag_b)
+END_RAW_BITFLAGS(RawFlags)
+
+std::cout << RawFlags::flag_a.bits << std::endl;
+```
+
+and
 
 ```cpp
 BEGIN_BITFLAGS(Flags)
