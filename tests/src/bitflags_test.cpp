@@ -61,10 +61,17 @@ TEST_F(BitflagsTest, Bits) {
 }
 
 TEST_F(BitflagsTest, Name) {
+#if __cplusplus >= 201703L
     EXPECT_EQ("none", Flags::none.name);
     EXPECT_EQ("flag_a", Flags::flag_a.name);
     EXPECT_EQ("flag_b", Flags::flag_b.name);
     EXPECT_EQ("flag_c", Flags::flag_c.name);
+#else
+    EXPECT_STREQ("none", Flags::none.name);
+    EXPECT_STREQ("flag_a", Flags::flag_a.name);
+    EXPECT_STREQ("flag_b", Flags::flag_b.name);
+    EXPECT_STREQ("flag_c", Flags::flag_c.name);
+#endif
 }
 
 TEST_F(BitflagsTest, CastToUnderlyingType) {

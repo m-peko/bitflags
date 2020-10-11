@@ -31,7 +31,9 @@
 #define BITFLAGS_HPP
 
 #include <cstdint>
+#if __cplusplus >= 201703L
 #include <string_view>
+#endif
 
 namespace bf {
 
@@ -146,13 +148,21 @@ struct raw_flag : flag_helper<raw_flag<TagT, T>> {
 template <typename TagT, typename T = std::uint8_t>
 struct flag : flag_helper<flag<TagT, T>> {
     T bits;
+#if __cplusplus >= 201703L
     std::string_view name;
+#else
+    char const * name;
+#endif
 
     constexpr flag(T bits) noexcept
         : bits(bits)
     {}
 
+#if __cplusplus >= 201703L
     constexpr flag(T bits, std::string_view name) noexcept
+#else
+    constexpr flag(T bits, char const * const name) noexcept
+#endif
         : bits(bits)
         , name(name)
     {}
@@ -231,7 +241,11 @@ constexpr T shift(int const offset) {
 template <
     typename ImplT,
     typename T,
+#if __cplusplus >= 201703L
     template <typename, typename> typename FlagT
+#else
+    template <typename, typename> class FlagT
+#endif
 >
 class bitflags;
 
@@ -246,28 +260,44 @@ class bitflags;
 template <
     typename ImplT,
     typename T,
+#if __cplusplus >= 201703L
     template <typename, typename> typename FlagT
+#else
+    template <typename, typename> class FlagT
+#endif
 >
 [[nodiscard]] constexpr T operator~(bitflags<ImplT, T, FlagT> const& rhs) noexcept;
 
 template <
     typename ImplT,
     typename T,
+#if __cplusplus >= 201703L
     template <typename, typename> typename FlagT
+#else
+    template <typename, typename> class FlagT
+#endif
 >
 [[nodiscard]] constexpr T operator&(bitflags<ImplT, T, FlagT> const& lhs, FlagT<ImplT, T> const& rhs) noexcept;
 
 template <
     typename ImplT,
     typename T,
+#if __cplusplus >= 201703L
     template <typename, typename> typename FlagT
+#else
+    template <typename, typename> class FlagT
+#endif
 >
 [[nodiscard]] constexpr T operator|(bitflags<ImplT, T, FlagT> const& lhs, FlagT<ImplT, T> const& rhs) noexcept;
 
 template <
     typename ImplT,
     typename T,
+#if __cplusplus >= 201703L
     template <typename, typename> typename FlagT
+#else
+    template <typename, typename> class FlagT
+#endif
 >
 [[nodiscard]] constexpr T operator^(bitflags<ImplT, T, FlagT> const& lhs, FlagT<ImplT, T> const& rhs) noexcept;
 
@@ -280,10 +310,17 @@ template <
 template <
     typename ImplT,
     typename T = internal::min_t<ImplT::end_ - ImplT::begin_ + 1>,
+#if __cplusplus >= 201703L
     template <
         typename,
         typename
     > typename FlagT = internal::flag
+#else
+    template <
+        typename,
+        typename
+    > class FlagT = internal::flag
+#endif
 >
 class bitflags : public ImplT {
 public:
@@ -305,7 +342,11 @@ public:
         : curr_(bits)
     {}
 
+#if __cplusplus >= 201703L
     constexpr bitflags(T bits, std::string_view name) noexcept
+#else
+    constexpr bitflags(T bits, char const * const name) noexcept
+#endif
         : curr_(bits, name)
     {}
 
