@@ -47,6 +47,7 @@ struct BitflagsTest : testing::Test {
 };
 
 TEST_F(BitflagsTest, Bits) {
+#if __cplusplus >= 201402L
     // raw flags (without string representation)
     EXPECT_EQ(0b0000U, RawFlags::none.bits);
     EXPECT_EQ(0b0001U, RawFlags::flag_a.bits);
@@ -58,16 +59,37 @@ TEST_F(BitflagsTest, Bits) {
     EXPECT_EQ(0b0001U, Flags::flag_a.bits);
     EXPECT_EQ(0b0010U, Flags::flag_b.bits);
     EXPECT_EQ(0b0100U, Flags::flag_c.bits);
+#else
+    // raw flags (without string representation)
+    EXPECT_EQ(0x00U, RawFlags::none.bits);
+    EXPECT_EQ(0x01U, RawFlags::flag_a.bits);
+    EXPECT_EQ(0x02U, RawFlags::flag_b.bits);
+    EXPECT_EQ(0x04U, RawFlags::flag_c.bits);
+
+    // flags (with string representation)
+    EXPECT_EQ(0x00U, Flags::none.bits);
+    EXPECT_EQ(0x01U, Flags::flag_a.bits);
+    EXPECT_EQ(0x02U, Flags::flag_b.bits);
+    EXPECT_EQ(0x04U, Flags::flag_c.bits);
+#endif
 }
 
 TEST_F(BitflagsTest, Name) {
-    EXPECT_STREQ("none", Flags::none.name.data());
-    EXPECT_STREQ("flag_a", Flags::flag_a.name.data());
-    EXPECT_STREQ("flag_b", Flags::flag_b.name.data());
-    EXPECT_STREQ("flag_c", Flags::flag_c.name.data());
+#if __cplusplus >= 201703L
+    EXPECT_EQ("none", Flags::none.name);
+    EXPECT_EQ("flag_a", Flags::flag_a.name);
+    EXPECT_EQ("flag_b", Flags::flag_b.name);
+    EXPECT_EQ("flag_c", Flags::flag_c.name);
+#else
+    EXPECT_STREQ("none", Flags::none.name);
+    EXPECT_STREQ("flag_a", Flags::flag_a.name);
+    EXPECT_STREQ("flag_b", Flags::flag_b.name);
+    EXPECT_STREQ("flag_c", Flags::flag_c.name);
+#endif
 }
 
 TEST_F(BitflagsTest, CastToUnderlyingType) {
+#if __cplusplus >= 201402L
     // raw flags (without string representation)
     EXPECT_EQ(0b0000U, static_cast<RawFlags::underlying_type>(RawFlags::none));
     EXPECT_EQ(0b0001U, static_cast<RawFlags::underlying_type>(RawFlags::flag_a));
@@ -79,6 +101,19 @@ TEST_F(BitflagsTest, CastToUnderlyingType) {
     EXPECT_EQ(0b0001U, static_cast<Flags::underlying_type>(Flags::flag_a));
     EXPECT_EQ(0b0010U, static_cast<Flags::underlying_type>(Flags::flag_b));
     EXPECT_EQ(0b0100U, static_cast<Flags::underlying_type>(Flags::flag_c));
+#else
+    // raw flags (without string representation)
+    EXPECT_EQ(0x00U, static_cast<RawFlags::underlying_type>(RawFlags::none));
+    EXPECT_EQ(0x01U, static_cast<RawFlags::underlying_type>(RawFlags::flag_a));
+    EXPECT_EQ(0x02U, static_cast<RawFlags::underlying_type>(RawFlags::flag_b));
+    EXPECT_EQ(0x04U, static_cast<RawFlags::underlying_type>(RawFlags::flag_c));
+
+    // flags (with string representation)
+    EXPECT_EQ(0x00U, static_cast<Flags::underlying_type>(Flags::none));
+    EXPECT_EQ(0x01U, static_cast<Flags::underlying_type>(Flags::flag_a));
+    EXPECT_EQ(0x02U, static_cast<Flags::underlying_type>(Flags::flag_b));
+    EXPECT_EQ(0x04U, static_cast<Flags::underlying_type>(Flags::flag_c));
+#endif
 }
 
 TEST_F(BitflagsTest, OperatorNot) {
@@ -114,6 +149,7 @@ TEST_F(BitflagsTest, OperatorAnd) {
 }
 
 TEST_F(BitflagsTest, OperatorOr) {
+#if __cplusplus >= 201402L
     // raw flags (without string representation)
     EXPECT_EQ(0b0011U, RawFlags::flag_a | RawFlags::flag_b);
     EXPECT_EQ(0b0111U, RawFlags::flag_a | RawFlags::flag_b | RawFlags::flag_c);
@@ -121,30 +157,63 @@ TEST_F(BitflagsTest, OperatorOr) {
     // flags (with string representation)
     EXPECT_EQ(0b0011U, Flags::flag_a | Flags::flag_b);
     EXPECT_EQ(0b0111U, Flags::flag_a | Flags::flag_b | Flags::flag_c);
+#else
+    // raw flags (without string representation)
+    EXPECT_EQ(0x03U, RawFlags::flag_a | RawFlags::flag_b);
+    EXPECT_EQ(0x07U, RawFlags::flag_a | RawFlags::flag_b | RawFlags::flag_c);
+
+    // flags (with string representation)
+    EXPECT_EQ(0x03U, Flags::flag_a | Flags::flag_b);
+    EXPECT_EQ(0x07U, Flags::flag_a | Flags::flag_b | Flags::flag_c);
+#endif
 }
 
 TEST_F(BitflagsTest, OperatorXor) {
+#if __cplusplus >= 201402L
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::flag_a;
 
-    EXPECT_EQ(0b0001U, raw_flags);
+    EXPECT_EQ(0b0001U, raw_flags.bits());
 
     raw_flags ^= RawFlags::flag_a;
-    EXPECT_EQ(0b0000U, raw_flags);
+    EXPECT_EQ(0b0000U, raw_flags.bits());
 
     raw_flags ^= RawFlags::flag_a;
-    EXPECT_EQ(0b0001U, raw_flags);
+    EXPECT_EQ(0b0001U, raw_flags.bits());
 
     // flags (with string representation)
     Flags flags = Flags::flag_a;
 
-    EXPECT_EQ(0b0001U, flags);
+    EXPECT_EQ(0b0001U, flags.bits());
 
     flags ^= Flags::flag_a;
-    EXPECT_EQ(0b0000U, flags);
+    EXPECT_EQ(0b0000U, flags.bits());
 
     flags ^= Flags::flag_a;
-    EXPECT_EQ(0b0001U, flags);
+    EXPECT_EQ(0b0001U, flags.bits());
+#else
+    // raw flags (without string representation)
+    RawFlags raw_flags = RawFlags::flag_a;
+
+    EXPECT_EQ(0x01U, raw_flags.bits());
+
+    raw_flags ^= RawFlags::flag_a;
+    EXPECT_EQ(0x00U, raw_flags.bits());
+
+    raw_flags ^= RawFlags::flag_a;
+    EXPECT_EQ(0x01U, raw_flags.bits());
+
+    // flags (with string representation)
+    Flags flags = Flags::flag_a;
+
+    EXPECT_EQ(0x01U, flags.bits());
+
+    flags ^= Flags::flag_a;
+    EXPECT_EQ(0x00U, flags.bits());
+
+    flags ^= Flags::flag_a;
+    EXPECT_EQ(0x01U, flags.bits());
+#endif
 }
 
 TEST_F(BitflagsTest, Empty) {

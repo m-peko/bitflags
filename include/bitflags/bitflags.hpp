@@ -31,7 +31,26 @@
 #define BITFLAGS_HPP
 
 #include <cstdint>
+#if __cplusplus >= 201703L
 #include <string_view>
+#endif
+
+#if defined(__has_cpp_attribute)
+#    if __has_cpp_attribute(nodiscard)
+#        if __cplusplus >= 201703L
+#            define NODISCARD [[nodiscard]]
+#        endif
+#    endif
+#endif
+#ifndef NODISCARD
+#    define NODISCARD
+#endif
+
+#if __cplusplus >= 201402L
+#    define NON_CONST_CONSTEXPR constexpr
+#else
+#    define NON_CONST_CONSTEXPR
+#endif
 
 namespace bf {
 
@@ -62,11 +81,11 @@ struct flag_helper {
      *     FlagT <op> FlagT
      */
 
-    [[nodiscard]] friend constexpr bool operator==(FlagT const& lhs, FlagT const& rhs) noexcept {
+    NODISCARD friend constexpr bool operator==(FlagT const& lhs, FlagT const& rhs) noexcept {
         return lhs.bits == rhs.bits;
     }
 
-    [[nodiscard]] friend constexpr bool operator!=(FlagT const& lhs, FlagT const& rhs) noexcept {
+    NODISCARD friend constexpr bool operator!=(FlagT const& lhs, FlagT const& rhs) noexcept {
         return lhs.bits != rhs.bits;
     }
 
@@ -78,19 +97,19 @@ struct flag_helper {
      *     FlagT <op>  FlagT
      */
 
-    [[nodiscard]] friend constexpr FlagT operator~(FlagT const& rhs) noexcept {
+    NODISCARD friend constexpr FlagT operator~(FlagT const& rhs) noexcept {
         return ~rhs.bits;
     }
 
-    [[nodiscard]] friend constexpr FlagT operator&(FlagT const& lhs, FlagT const& rhs) noexcept {
+    NODISCARD friend constexpr FlagT operator&(FlagT const& lhs, FlagT const& rhs) noexcept {
         return lhs.bits & rhs.bits;
     }
 
-    [[nodiscard]] friend constexpr FlagT operator|(FlagT const& lhs, FlagT const& rhs) noexcept {
+    NODISCARD friend constexpr FlagT operator|(FlagT const& lhs, FlagT const& rhs) noexcept {
         return lhs.bits | rhs.bits;
     }
 
-    [[nodiscard]] friend constexpr FlagT operator^(FlagT const& lhs, FlagT const& rhs) noexcept {
+    NODISCARD friend constexpr FlagT operator^(FlagT const& lhs, FlagT const& rhs) noexcept {
         return lhs.bits ^ rhs.bits;
     }
 };
@@ -110,7 +129,7 @@ struct raw_flag : flag_helper<raw_flag<TagT, T>> {
         : bits(bits)
     {}
 
-    [[nodiscard]] explicit constexpr operator T() const noexcept {
+    NODISCARD explicit constexpr operator T() const noexcept {
         return bits;
     }
 
@@ -120,17 +139,17 @@ struct raw_flag : flag_helper<raw_flag<TagT, T>> {
      *     raw_flag <op>= raw_flag
      */
 
-    constexpr raw_flag& operator&=(raw_flag const& rhs) noexcept {
+    NON_CONST_CONSTEXPR raw_flag& operator&=(raw_flag const& rhs) noexcept {
         bits &= rhs.bits;
         return *this;
     }
 
-    constexpr raw_flag& operator|=(raw_flag const& rhs) noexcept {
+    NON_CONST_CONSTEXPR raw_flag& operator|=(raw_flag const& rhs) noexcept {
         bits |= rhs.bits;
         return *this;
     }
 
-    constexpr raw_flag& operator^=(raw_flag const& rhs) noexcept {
+    NON_CONST_CONSTEXPR raw_flag& operator^=(raw_flag const& rhs) noexcept {
         bits ^= rhs.bits;
         return *this;
     }
@@ -146,18 +165,26 @@ struct raw_flag : flag_helper<raw_flag<TagT, T>> {
 template <typename TagT, typename T = std::uint8_t>
 struct flag : flag_helper<flag<TagT, T>> {
     T bits;
+#if __cplusplus >= 201703L
     std::string_view name;
+#else
+    char const * name;
+#endif
 
     constexpr flag(T bits) noexcept
         : bits(bits)
     {}
 
+#if __cplusplus >= 201703L
     constexpr flag(T bits, std::string_view name) noexcept
+#else
+    constexpr flag(T bits, char const * const name) noexcept
+#endif
         : bits(bits)
         , name(name)
     {}
 
-    [[nodiscard]] explicit constexpr operator T() const noexcept {
+    NODISCARD explicit constexpr operator T() const noexcept {
         return bits;
     }
 
@@ -167,17 +194,17 @@ struct flag : flag_helper<flag<TagT, T>> {
      *     flag <op>= flag
      */
 
-    constexpr flag& operator&=(flag const& rhs) noexcept {
+    NON_CONST_CONSTEXPR flag& operator&=(flag const& rhs) noexcept {
         bits &= rhs.bits;
         return *this;
     }
 
-    constexpr flag& operator|=(flag const& rhs) noexcept {
+    NON_CONST_CONSTEXPR flag& operator|=(flag const& rhs) noexcept {
         bits |= rhs.bits;
         return *this;
     }
 
-    constexpr flag& operator^=(flag const& rhs) noexcept {
+    NON_CONST_CONSTEXPR flag& operator^=(flag const& rhs) noexcept {
         bits ^= rhs.bits;
         return *this;
     }
@@ -193,15 +220,24 @@ struct flag : flag_helper<flag<TagT, T>> {
  */
 template <std::size_t N>
 struct min {
-    using type = typename std::conditional_t<
-        (N <= 8), std::uint8_t,
-        typename std::conditional_t<
-            (N <= 16), std::uint16_t,
-            typename std::conditional_t<
-                (N <= 32), std::uint32_t, std::uint64_t
+#if __cplusplus >= 201402L
+    template <bool B, typename T, typename U>
+    using conditional_t = typename std::conditional_t<B, T, U>;
+#else
+    template <bool B, typename T, typename U>
+    using conditional_t = typename std::conditional<B, T, U>::type;
+#endif
+
+    using type =
+        conditional_t<
+            (N <= 8), std::uint8_t,
+            conditional_t<
+                (N <= 16), std::uint16_t,
+                conditional_t<
+                    (N <= 32), std::uint32_t, std::uint64_t
+                >
             >
-        >
-    >;
+        >;
 };
 
 template <std::size_t N>
@@ -219,11 +255,9 @@ using min_t = typename min<N>::type;
  */
 template <typename T>
 constexpr T shift(int const offset) {
-    if (offset < 0) {
-        return static_cast<T>(0);
-    } else {
-        return static_cast<T>(1U << offset);
-    }
+    return offset < 0
+        ? static_cast<T>(0)
+        : static_cast<T>(1U << offset);
 }
 
 } // internal
@@ -231,7 +265,11 @@ constexpr T shift(int const offset) {
 template <
     typename ImplT,
     typename T,
+#if __cplusplus >= 201703L
     template <typename, typename> typename FlagT
+#else
+    template <typename, typename> class FlagT
+#endif
 >
 class bitflags;
 
@@ -246,30 +284,46 @@ class bitflags;
 template <
     typename ImplT,
     typename T,
+#if __cplusplus >= 201703L
     template <typename, typename> typename FlagT
+#else
+    template <typename, typename> class FlagT
+#endif
 >
-[[nodiscard]] constexpr T operator~(bitflags<ImplT, T, FlagT> const& rhs) noexcept;
+NODISCARD constexpr T operator~(bitflags<ImplT, T, FlagT> const& rhs) noexcept;
 
 template <
     typename ImplT,
     typename T,
+#if __cplusplus >= 201703L
     template <typename, typename> typename FlagT
+#else
+    template <typename, typename> class FlagT
+#endif
 >
-[[nodiscard]] constexpr T operator&(bitflags<ImplT, T, FlagT> const& lhs, FlagT<ImplT, T> const& rhs) noexcept;
+NODISCARD constexpr T operator&(bitflags<ImplT, T, FlagT> const& lhs, FlagT<ImplT, T> const& rhs) noexcept;
 
 template <
     typename ImplT,
     typename T,
+#if __cplusplus >= 201703L
     template <typename, typename> typename FlagT
+#else
+    template <typename, typename> class FlagT
+#endif
 >
-[[nodiscard]] constexpr T operator|(bitflags<ImplT, T, FlagT> const& lhs, FlagT<ImplT, T> const& rhs) noexcept;
+NODISCARD constexpr T operator|(bitflags<ImplT, T, FlagT> const& lhs, FlagT<ImplT, T> const& rhs) noexcept;
 
 template <
     typename ImplT,
     typename T,
+#if __cplusplus >= 201703L
     template <typename, typename> typename FlagT
+#else
+    template <typename, typename> class FlagT
+#endif
 >
-[[nodiscard]] constexpr T operator^(bitflags<ImplT, T, FlagT> const& lhs, FlagT<ImplT, T> const& rhs) noexcept;
+NODISCARD constexpr T operator^(bitflags<ImplT, T, FlagT> const& lhs, FlagT<ImplT, T> const& rhs) noexcept;
 
 /**
  * class bitflags
@@ -280,10 +334,17 @@ template <
 template <
     typename ImplT,
     typename T = internal::min_t<ImplT::end_ - ImplT::begin_ + 1>,
+#if __cplusplus >= 201703L
     template <
         typename,
         typename
     > typename FlagT = internal::flag
+#else
+    template <
+        typename,
+        typename
+    > class FlagT = internal::flag
+#endif
 >
 class bitflags : public ImplT {
 public:
@@ -305,7 +366,11 @@ public:
         : curr_(bits)
     {}
 
+#if __cplusplus >= 201703L
     constexpr bitflags(T bits, std::string_view name) noexcept
+#else
+    constexpr bitflags(T bits, char const * const name) noexcept
+#endif
         : curr_(bits, name)
     {}
 
@@ -330,15 +395,15 @@ public:
 
     ~bitflags() = default;
 
-    [[nodiscard]] constexpr operator T() const noexcept {
+    NODISCARD constexpr operator T() const noexcept {
         return curr_.bits;
     }
 
-    [[nodiscard]] constexpr bool operator==(FlagT<ImplT, T> const& rhs) const noexcept {
+    NODISCARD constexpr bool operator==(FlagT<ImplT, T> const& rhs) const noexcept {
         return curr_ == rhs;
     }
 
-    [[nodiscard]] constexpr bool operator!=(FlagT<ImplT, T> const& rhs) const noexcept {
+    NODISCARD constexpr bool operator!=(FlagT<ImplT, T> const& rhs) const noexcept {
         return curr_ != rhs;
     }
 
@@ -352,33 +417,33 @@ public:
      *     bitflags<ImplT, T, FlagT> <op>= FlagT<ImplT, T>
      */
 
-    [[nodiscard]] friend constexpr bitflags operator~(bitflags const& rhs) noexcept {
+    NODISCARD friend constexpr bitflags operator~(bitflags const& rhs) noexcept {
         return ~rhs.curr_;
     }
 
-    [[nodiscard]] friend constexpr bitflags operator&(bitflags const& lhs, FlagT<ImplT, T> const& rhs) noexcept {
+    NODISCARD friend constexpr bitflags operator&(bitflags const& lhs, FlagT<ImplT, T> const& rhs) noexcept {
         return lhs.curr_ & rhs;
     }
 
-    [[nodiscard]] friend constexpr bitflags operator|(bitflags const& lhs, FlagT<ImplT, T> const& rhs) noexcept {
+    NODISCARD friend constexpr bitflags operator|(bitflags const& lhs, FlagT<ImplT, T> const& rhs) noexcept {
         return lhs.curr_ | rhs;
     }
 
-    [[nodiscard]] friend constexpr bitflags operator^(bitflags const& lhs, FlagT<ImplT, T> const& rhs) noexcept {
+    NODISCARD friend constexpr bitflags operator^(bitflags const& lhs, FlagT<ImplT, T> const& rhs) noexcept {
         return lhs.curr_ ^ rhs;
     }
 
-    constexpr bitflags& operator&=(FlagT<ImplT, T> const& rhs) noexcept {
+    NON_CONST_CONSTEXPR bitflags& operator&=(FlagT<ImplT, T> const& rhs) noexcept {
         curr_ &= rhs;
         return *this;
     }
 
-    constexpr bitflags& operator|=(FlagT<ImplT, T> const& rhs) noexcept {
+    NON_CONST_CONSTEXPR bitflags& operator|=(FlagT<ImplT, T> const& rhs) noexcept {
         curr_ |= rhs;
         return *this;
     }
 
-    constexpr bitflags& operator^=(FlagT<ImplT, T> const& rhs) noexcept {
+    NON_CONST_CONSTEXPR bitflags& operator^=(FlagT<ImplT, T> const& rhs) noexcept {
         curr_ ^= rhs;
         return *this;
     }
@@ -388,7 +453,7 @@ public:
      *
      * @return Underlying bits
      */
-    [[nodiscard]] constexpr T bits() const noexcept {
+    NODISCARD constexpr T bits() const noexcept {
         return curr_.bits;
     }
 
@@ -397,7 +462,7 @@ public:
      *
      * @return Empty set of flags
      */
-    [[nodiscard]] static constexpr FlagT<ImplT, T> empty() noexcept {
+    NODISCARD static constexpr FlagT<ImplT, T> empty() noexcept {
         return T{};
     }
 
@@ -406,7 +471,7 @@ public:
      *
      * @return Set of all defined flags
      */
-    [[nodiscard]] static constexpr FlagT<ImplT, T> all() noexcept {
+    NODISCARD static constexpr FlagT<ImplT, T> all() noexcept {
         return ~T{};
     }
 
@@ -415,7 +480,7 @@ public:
      *
      * @return True if no flag is currently set, otherwise false
      */
-    [[nodiscard]] constexpr bool is_empty() const noexcept {
+    NODISCARD constexpr bool is_empty() const noexcept {
         return curr_ == T{};
     }
 
@@ -424,7 +489,7 @@ public:
      *
      * @return True if all flags are currently set, otherwise false
      */
-    [[nodiscard]] constexpr bool is_all() const noexcept {
+    NODISCARD constexpr bool is_all() const noexcept {
         return curr_ == ~T{};
     }
 
@@ -437,7 +502,7 @@ public:
      * @return True if the specified flags is contained within the
      *         current set of flags, otherwise false
      */
-    [[nodiscard]] constexpr bool contains(FlagT<ImplT, T> const& rhs) const noexcept {
+    NODISCARD constexpr bool contains(FlagT<ImplT, T> const& rhs) const noexcept {
         return static_cast<T>(curr_ & rhs) || rhs == empty();
     }
 
@@ -452,7 +517,7 @@ public:
      *         current set of flags, otherwise false
      */
     template <typename ... U>
-    [[nodiscard]] constexpr bool contains(FlagT<ImplT, T> const& rhs_1, U const& ... rhs_n) const noexcept {
+    NODISCARD constexpr bool contains(FlagT<ImplT, T> const& rhs_1, U const& ... rhs_n) const noexcept {
         return contains(rhs_1) && contains(rhs_n...);
     }
 
@@ -461,7 +526,7 @@ public:
      *
      * @param rhs Flag to be set
      */
-    constexpr void set(FlagT<ImplT, T> const& rhs) noexcept {
+    NON_CONST_CONSTEXPR void set(FlagT<ImplT, T> const& rhs) noexcept {
         curr_ |= rhs;
     }
 
@@ -470,7 +535,7 @@ public:
      *
      * @param rhs Flag to be unset
      */
-    constexpr void remove(FlagT<ImplT, T> const& rhs) noexcept {
+    NON_CONST_CONSTEXPR void remove(FlagT<ImplT, T> const& rhs) noexcept {
         curr_ &= ~rhs;
     }
 
@@ -480,14 +545,14 @@ public:
      *
      * @param rhs Flag to be toggled
      */
-    constexpr void toggle(FlagT<ImplT, T> const& rhs) noexcept {
+    NON_CONST_CONSTEXPR void toggle(FlagT<ImplT, T> const& rhs) noexcept {
         curr_ ^= rhs;
     }
 
     /**
      * Clears all flags currently set.
      */
-    constexpr void clear() noexcept {
+    NON_CONST_CONSTEXPR void clear() noexcept {
         curr_ = T{};
     }
 

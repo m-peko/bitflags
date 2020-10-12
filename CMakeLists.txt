@@ -33,7 +33,15 @@ else ()
     )
 endif ()
 
-set (CMAKE_CXX_STANDARD 17)
+if (BITFLAGS_CPP_VERSION EQUAL 17)
+    message (STATUS "Using C++17")
+elseif (BITFLAGS_CPP_VERSION EQUAL 14)
+    message (STATUS "Using C++14")
+elseif (BITFLAGS_CPP_VERSION EQUAL 11)
+    message (STATUS "Using C++11")
+endif ()
+
+set (CMAKE_CXX_STANDARD ${BITFLAGS_CPP_VERSION})
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS OFF)
 
@@ -54,12 +62,12 @@ endif ()
 option (BITFLAGS_BUILD_SAMPLES "Build examples" ON)
 option (BITFLAGS_BUILD_TESTS "Build tests" ON)
 
-include(GNUInstallDirs)
+include (GNUInstallDirs)
 
 add_library (bitflags INTERFACE)
 add_library (bitflags::bitflags ALIAS bitflags)
 
-target_compile_features (bitflags INTERFACE cxx_std_17)
+target_compile_features (bitflags INTERFACE cxx_std_${BITFLAGS_CPP_VERSION})
 target_include_directories (
     bitflags INTERFACE
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
@@ -91,8 +99,8 @@ if (BITFLAGS_BUILD_TESTS)
 endif ()
 
 if (NOT BITFLAGS_SUBPROJECT)
-    include(CMakePackageConfigHelpers)
-    
+    include (CMakePackageConfigHelpers)
+
     install (TARGETS bitflags EXPORT bitflags-config)
 
     write_basic_package_version_file (

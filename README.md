@@ -2,11 +2,13 @@
 
 <img src="img/logo.png" height="120px"/>
 
-Single-header header-only C++17 library for easily managing set of auto-generated type-safe flags.
+Single-header header-only C++11 / C++14 / C++17 library for easily managing set of auto-generated type-safe flags.
 
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat)](https://github.com/m-peko/bitflags/blob/master/LICENSE)
 [![Build Status](https://travis-ci.org/m-peko/bitflags.svg?branch=master)](https://travis-ci.org/m-peko/bitflags)
 [![Codecov](https://codecov.io/gh/m-peko/bitflags/branch/master/graph/badge.svg)](https://codecov.io/gh/m-peko/bitflags)
+[![Standard](https://img.shields.io/badge/C%2B%2B-11-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B11)
+[![Standard](https://img.shields.io/badge/C%2B%2B-14-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B14)
 [![Standard](https://img.shields.io/badge/C%2B%2B-17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B17)
 [![Compiler explorer](https://img.shields.io/badge/compiler_explorer-online-blue.svg)](https://godbolt.org/z/KPG963)
 
@@ -93,7 +95,7 @@ _So, why should I use `bitflags` library?_
 
 ## Getting Started
 
-`bitflags` is a single-header header-only C++17 library for easily managing set of auto-generated type-safe flags.
+`bitflags` is a single-header header-only C++11 / C++14 / C++17 library for easily managing set of auto-generated type-safe flags.
 
 ### Raw flags vs flags?
 
