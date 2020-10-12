@@ -6,6 +6,24 @@ notifications:
 matrix:
   include:
 
+  - name: "Linux GCC C++11"
+    os: linux
+    dist: bionic
+    compiler: gcc
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - gcc-8
+          - g++-8
+    before_script:
+      - CPP_VERSION=11
+
+      # Install new alternatives
+      - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 30
+      - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 30
+
   - name: "Linux GCC C++14"
     os: linux
     dist: bionic
@@ -42,6 +60,21 @@ matrix:
       - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 30
       - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 30
 
+  - name: "Linux CLANG C++11"
+    os: linux
+    dist: bionic
+    compiler: clang
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - gcc-8
+          - g++-8
+          - clang-7
+    before_script:
+      - CPP_VERSION=11
+
   - name: "Linux CLANG C++14"
     os: linux
     dist: bionic
@@ -71,6 +104,12 @@ matrix:
           - clang-7
     before_script:
       - CPP_VERSION=17
+
+  - name: "Windows MSVC C++11"
+    os: windows
+    compiler: msvc
+    before_script:
+      - CPP_VERSION=11
 
   - name: "Windows MSVC C++14"
     os: windows
