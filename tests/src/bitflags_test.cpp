@@ -134,24 +134,24 @@ TEST_F(BitflagsTest, OperatorXor) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::flag_a;
 
-    EXPECT_EQ(0b0001U, raw_flags);
+    EXPECT_EQ(0b0001U, raw_flags.bits());
 
     raw_flags ^= RawFlags::flag_a;
-    EXPECT_EQ(0b0000U, raw_flags);
+    EXPECT_EQ(0b0000U, raw_flags.bits());
 
     raw_flags ^= RawFlags::flag_a;
-    EXPECT_EQ(0b0001U, raw_flags);
+    EXPECT_EQ(0b0001U, raw_flags.bits());
 
     // flags (with string representation)
     Flags flags = Flags::flag_a;
 
-    EXPECT_EQ(0b0001U, flags);
+    EXPECT_EQ(0b0001U, flags.bits());
 
     flags ^= Flags::flag_a;
-    EXPECT_EQ(0b0000U, flags);
+    EXPECT_EQ(0b0000U, flags.bits());
 
     flags ^= Flags::flag_a;
-    EXPECT_EQ(0b0001U, flags);
+    EXPECT_EQ(0b0001U, flags.bits());
 }
 
 TEST_F(BitflagsTest, Empty) {
