@@ -31,6 +31,7 @@
 #define BITFLAGS_HPP
 
 #include <cstdint>
+#include <utility>
 #if __cplusplus >= 201703L
 #include <string_view>
 #endif
