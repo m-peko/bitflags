@@ -5,7 +5,7 @@ if (DEFINED PROJECT_NAME)
 endif ()
 
 set (BITFLAGS_VERSION_MAJOR 1)
-set (BITFLAGS_VERSION_MINOR 2)
+set (BITFLAGS_VERSION_MINOR 4)
 set (BITFLAGS_VERSION_PATCH 0)
 
 set (BITFLAGS_VERSION "${BITFLAGS_VERSION_MAJOR}.${BITFLAGS_VERSION_MINOR}.${BITFLAGS_VERSION_PATCH}")
@@ -39,6 +39,9 @@ elseif (BITFLAGS_CPP_VERSION EQUAL 14)
     message (STATUS "Using C++14")
 elseif (BITFLAGS_CPP_VERSION EQUAL 11)
     message (STATUS "Using C++11")
+else ()
+    message (STATUS "Using default C++17")
+    set (BITFLAGS_CPP_VERSION 17)
 endif ()
 
 set (CMAKE_CXX_STANDARD ${BITFLAGS_CPP_VERSION})
@@ -59,8 +62,9 @@ else ()
     endif ()
 endif ()
 
-option (BITFLAGS_BUILD_SAMPLES "Build examples" ON)
 option (BITFLAGS_BUILD_TESTS "Build tests" ON)
+option (BITFLAGS_BUILD_SAMPLES "Build examples" ON)
+option (BITFLAGS_BUILD_BENCHMARK "Build benchmark" OFF)
 
 include (GNUInstallDirs)
 
@@ -73,10 +77,6 @@ target_include_directories (
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
 )
-
-if (BITFLAGS_BUILD_SAMPLES)
-    add_subdirectory (samples)
-endif ()
 
 if (BITFLAGS_BUILD_TESTS)
     # Only include googletest if the git submodule has been fetched
@@ -95,6 +95,33 @@ if (BITFLAGS_BUILD_TESTS)
         add_subdirectory (tests)
     else ()
         message (STATUS "googletest git submodule is absent. Run `git submodule init && git submodule update` to get it")
+    endif ()
+endif ()
+
+if (BITFLAGS_BUILD_SAMPLES)
+    add_subdirectory (samples)
+endif ()
+
+if (BITFLAGS_BUILD_BENCHMARK)
+    # Only include googlebench if the git submodule has been fetched
+    if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/googlebench/CMakeLists.txt")
+        # Enable benchmark and add the benchmark directory
+        message (STATUS "Benchmark has been enabled")
+        set (GOOGLEBENCH_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/googlebench)
+        set (GOOGLEBENCH_INCLUDE ${GOOGLEBENCH_ROOT}/googlebench/include)
+        set (GOOGLEBENCH_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/googlebench)
+        set (GOOGLEBENCH_LIBRARY ${GOOGLEBENCH_BINARY_DIR}/googlebench)
+
+        set (BENCHMARK_ENABLE_GTEST_TESTS OFF)
+
+        if (NOT CMAKE_BUILD_TYPE MATCHES Debug)
+            add_definitions(-DNDEBUG)
+        endif()
+
+        add_subdirectory (googlebench)
+        add_subdirectory (benchmark)
+    else ()
+        message (STATUS "googlebench git submodule is absent. Run `git submodule init && git submodule update` to get it")
     endif ()
 endif ()
 

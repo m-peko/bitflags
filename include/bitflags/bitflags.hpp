@@ -126,6 +126,10 @@ template <typename TagT, typename T = std::uint8_t>
 struct raw_flag : flag_helper<raw_flag<TagT, T>> {
     T bits;
 
+    constexpr raw_flag() noexcept
+        : bits(0)
+    {}
+
     constexpr raw_flag(T bits) noexcept
         : bits(bits)
     {}
@@ -171,6 +175,10 @@ struct flag : flag_helper<flag<TagT, T>> {
 #else
     char const * name;
 #endif
+
+    constexpr flag() noexcept
+        : bits(0)
+    {}
 
     constexpr flag(T bits) noexcept
         : bits(bits)
@@ -575,7 +583,7 @@ private:
         static constexpr int begin_ = __LINE__;
 
 #define END_RAW_BITFLAGS(NAME)                                                   \
-        static constexpr int end_ = __LINE__;                                    \
+        static constexpr int end_   = __LINE__;                                  \
     };                                                                           \
     using NAME = bf::bitflags<                                                   \
         NAME##Impl< bf::bitflags< NAME##Impl<std::uint8_t> >::underlying_type >, \
@@ -598,7 +606,7 @@ private:
         static constexpr int begin_ = __LINE__;
 
 #define END_BITFLAGS(NAME)                                                      \
-        static constexpr int end_ = __LINE__;                                   \
+        static constexpr int end_   = __LINE__;                                 \
     };                                                                          \
     using NAME = bf::bitflags<                                                  \
         NAME##Impl< bf::bitflags< NAME##Impl<std::uint8_t> >::underlying_type > \

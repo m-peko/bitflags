@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.8)
 
-# Use bitflags's include directories + test include directories
+# Use bitflags's include directories + Google Test include directories
 include_directories (
     ${PROJECT_SOURCE_DIR}/include/
     ${GOOGLETEST_INCLUDE}
@@ -13,7 +13,7 @@ link_directories (
     ${GOOGLETEST_LIBRARY}
 )
 
-# Link against GoogleTest, bitflags and pthread.
+# Link against GoogleTest, bitflags and pthread
 # Pthread is required by GoogleTest
 link_libraries (
     gtest

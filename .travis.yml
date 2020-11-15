@@ -141,6 +141,7 @@ matrix:
 
       # Enable code coverage
       - ENABLE_COVERAGE=True
+
     after_success:
       # Upload reports to Codecov
       - bash <(curl -s https://codecov.io/bash) -x gcov-8
@@ -157,8 +158,10 @@ script:
   # Generate build files
   - cmake .. -DBITFLAGS_CPP_VERSION:INTEGER=${CPP_VERSION-17} -DBITFLAGS_ENABLE_COVERAGE:BOOL=${ENABLE_COVERAGE-False}
 
-  # Compile examples and tests
+  # Compile samples
   # - cmake --build . --target samples
+
+  # Compile tests
   - cmake --build . --target tests
 
   # Execute tests
