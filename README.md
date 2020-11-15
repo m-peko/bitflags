@@ -56,6 +56,7 @@ int main() {
     * [Set and Remove Specific Flag](#set-and-remove-specific-flag)
     * [Toggle Flags](#toggle-flags)
     * [Clear Flags](#clear-flags)
+* [Benchmark](#benchmark)
 * [Building Samples and Tests](#building-samples-and-tests)
 * [Compiler Compatibility](#compiler-compatibility)
 * [Contributing](#contributing)
@@ -352,6 +353,18 @@ flags.clear();
 std::cout << flags.contains(Flags::flag_a) << std::endl; // false
 std::cout << flags.contains(Flags::flag_b) << std::endl; // false
 std::cout << flags.contains(Flags::flag_c) << std::endl; // false
+```
+
+## Benchmark
+
+As you can see from the following chart, using `raw_flag`s is as fast as using `std::bitset`. However, using ordinary `flag`s (i.e. flags with string representation) is a bit slower (as it is expected because of additional feature of having string representation).
+
+<img src="img/benchmark.png"/>
+
+If you want to run the benchmark yourself, you can use `plot.py` script like:
+
+```bash
+$ python3 plot.py --benchmarks-dir <benchmark-json-dir>
 ```
 
 ## Building Samples and Tests
