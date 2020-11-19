@@ -38,7 +38,7 @@ def create_argument_parser():
     return parser
 
 def extract_benchmark_name(filename):
-    start = filename.find('/') + 1
+    start = filename.rfind('/') + 1
     end = filename.find('_benchmark.json')
     return filename[start:end]
 
