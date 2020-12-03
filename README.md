@@ -61,6 +61,7 @@ int main() {
 * [Compiler Compatibility](#compiler-compatibility)
 * [Contributing](#contributing)
 * [License](#license)
+* [Support](#support)
 
 ## Motivation
 
@@ -412,3 +413,9 @@ If you find that any of the tests **fail**, please create a ticket in the issue 
 ## License
 
 The project is available under the [MIT](https://opensource.org/licenses/MIT) license.
+
+## Support
+
+If you like the work `bitflags` library is doing, please consider supporting it:
+
+<a href="https://www.buymeacoffee.com/mpeko" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-red.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
