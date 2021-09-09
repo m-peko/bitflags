@@ -236,7 +236,7 @@ TEST_F(BitflagsTest, Empty) {
     EXPECT_FALSE(flags & Flags::flag_c);
 }
 
-TEST_F(BitflagsTest, All) {
+TEST_F(BitflagsTest, DISABLED_All) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b | RawFlags::flag_c;
 

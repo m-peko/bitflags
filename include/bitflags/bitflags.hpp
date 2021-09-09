@@ -503,8 +503,8 @@ public:
     }
 
     /**
-     * Checks whether only the specified flags are set in the current
-     * set of flags. Zero flags are treated as always present.
+     * Checks whether only the specified flag is set in the current
+     * set of flags.
      *
      * @param rhs Flag to check
      *
