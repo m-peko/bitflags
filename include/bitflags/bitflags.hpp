@@ -498,25 +498,38 @@ public:
      *
      * @return True if all flags are currently set, otherwise false
      */
-    NODISCARD constexpr bool is_all() const noexcept {
+    NODISCARD constexpr bool all_set() const noexcept {
         return curr_ == ~T{};
     }
 
     /**
-     * Checks whether specified flag is contained within the current
+     * Checks whether only the specified flags are set in the current
      * set of flags. Zero flags are treated as always present.
      *
      * @param rhs Flag to check
      *
-     * @return True if the specified flags is contained within the
+     * @return True if only the specified flag is in the
      *         current set of flags, otherwise false
      */
-    NODISCARD constexpr bool contains(FlagT<ImplT, T> const& rhs) const noexcept {
+    NODISCARD constexpr bool only_set(FlagT<ImplT, T> const& rhs) const noexcept {
+        return curr_ == rhs;
+    }
+
+    /**
+     * Checks whether specified flag is in the current
+     * set of flags. Zero flags are treated as always present.
+     *
+     * @param rhs Flag to check
+     *
+     * @return True if the specified flags is in the
+     *         current set of flags, otherwise false
+     */
+    NODISCARD constexpr bool is_set(FlagT<ImplT, T> const& rhs) const noexcept {
         return static_cast<T>(curr_ & rhs) || rhs == empty();
     }
 
     /**
-     * Checks whether all the specified flags are contained within the
+     * Checks whether all the specified flags are in the
      * current set of flags. Zero flags are treated as always present.
      *
      * @param rhs_1 First flag to check
@@ -526,8 +539,8 @@ public:
      *         current set of flags, otherwise false
      */
     template <typename ... U>
-    NODISCARD constexpr bool contains(FlagT<ImplT, T> const& rhs_1, U const& ... rhs_n) const noexcept {
-        return contains(rhs_1) && contains(rhs_n...);
+    NODISCARD constexpr bool is_set(FlagT<ImplT, T> const& rhs_1, U const& ... rhs_n) const noexcept {
+        return is_set(rhs_1) && is_set(rhs_n...);
     }
 
     /**
@@ -540,15 +553,6 @@ public:
     }
 
     /**
-     * Unsets specified flag.
-     *
-     * @param rhs Flag to be unset
-     */
-    NON_CONST_CONSTEXPR void remove(FlagT<ImplT, T> const& rhs) noexcept {
-        curr_ &= ~rhs;
-    }
-
-    /**
      * Sets specified flag if not already present.
      * Otherwise, unsets the specified flag.
      *
@@ -556,6 +560,15 @@ public:
      */
     NON_CONST_CONSTEXPR void toggle(FlagT<ImplT, T> const& rhs) noexcept {
         curr_ ^= rhs;
+    }
+
+    /**
+     * Clear the specified flag.
+     *
+     * @param rhs Flag to be unset
+     */
+    NON_CONST_CONSTEXPR void clear(FlagT<ImplT, T> const& rhs) noexcept {
+        curr_ &= ~rhs;
     }
 
     /**

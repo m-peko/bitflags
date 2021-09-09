@@ -221,7 +221,7 @@ TEST_F(BitflagsTest, Empty) {
     RawFlags raw_flags = RawFlags::empty();
 
     EXPECT_TRUE(raw_flags.is_empty());
-    EXPECT_FALSE(raw_flags.is_all());
+    EXPECT_FALSE(raw_flags.all_set());
     EXPECT_FALSE(raw_flags & RawFlags::flag_a);
     EXPECT_FALSE(raw_flags & RawFlags::flag_b);
     EXPECT_FALSE(raw_flags & RawFlags::flag_c);
@@ -230,7 +230,7 @@ TEST_F(BitflagsTest, Empty) {
     Flags flags = Flags::empty();
 
     EXPECT_TRUE(flags.is_empty());
-    EXPECT_FALSE(flags.is_all());
+    EXPECT_FALSE(flags.all_set());
     EXPECT_FALSE(flags & Flags::flag_a);
     EXPECT_FALSE(flags & Flags::flag_b);
     EXPECT_FALSE(flags & Flags::flag_c);
@@ -241,7 +241,7 @@ TEST_F(BitflagsTest, All) {
     RawFlags raw_flags = RawFlags::all();
 
     EXPECT_FALSE(raw_flags.is_empty());
-    EXPECT_TRUE(raw_flags.is_all());
+    EXPECT_TRUE(raw_flags.all_set());
     EXPECT_TRUE(raw_flags & RawFlags::flag_a);
     EXPECT_TRUE(raw_flags & RawFlags::flag_b);
     EXPECT_TRUE(raw_flags & RawFlags::flag_c);
@@ -250,7 +250,7 @@ TEST_F(BitflagsTest, All) {
     Flags flags = Flags::all();
 
     EXPECT_FALSE(flags.is_empty());
-    EXPECT_TRUE(flags.is_all());
+    EXPECT_TRUE(flags.all_set());
     EXPECT_TRUE(flags & Flags::flag_a);
     EXPECT_TRUE(flags & Flags::flag_b);
     EXPECT_TRUE(flags & Flags::flag_c);
@@ -260,156 +260,172 @@ TEST_F(BitflagsTest, Contains) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b;
 
-    EXPECT_TRUE(raw_flags.contains(RawFlags::none));
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_a));
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_b));
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_c));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::none));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_a));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_c));
 
-    EXPECT_TRUE(raw_flags.contains(RawFlags::none, RawFlags::flag_a, RawFlags::flag_b));
-    EXPECT_FALSE(raw_flags.contains(RawFlags::none, RawFlags::flag_a, RawFlags::flag_c));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::none, RawFlags::flag_a, RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::none, RawFlags::flag_a, RawFlags::flag_c));
 
     // flags (with string representation)
     Flags flags = Flags::flag_a | Flags::flag_b;
 
-    EXPECT_TRUE(flags.contains(Flags::none));
-    EXPECT_TRUE(flags.contains(Flags::flag_a));
-    EXPECT_TRUE(flags.contains(Flags::flag_b));
-    EXPECT_FALSE(flags.contains(Flags::flag_c));
+    EXPECT_TRUE(flags.is_set(Flags::none));
+    EXPECT_TRUE(flags.is_set(Flags::flag_a));
+    EXPECT_TRUE(flags.is_set(Flags::flag_b));
+    EXPECT_FALSE(flags.is_set(Flags::flag_c));
 
-    EXPECT_TRUE(flags.contains(Flags::none, Flags::flag_a, Flags::flag_b));
-    EXPECT_FALSE(flags.contains(Flags::none, Flags::flag_a, Flags::flag_c));
+    EXPECT_TRUE(flags.is_set(Flags::none, Flags::flag_a, Flags::flag_b));
+    EXPECT_FALSE(flags.is_set(Flags::none, Flags::flag_a, Flags::flag_c));
 }
 
 TEST_F(BitflagsTest, Set) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::none;
 
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_a));
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_b));
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_c));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_a));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_c));
 
     raw_flags.set(RawFlags::flag_a);
     raw_flags.set(RawFlags::flag_b);
 
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_a));
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_b));
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_c));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_a));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_c));
 
     // flags (with string representation)
     Flags flags = Flags::none;
 
-    EXPECT_FALSE(flags.contains(Flags::flag_a));
-    EXPECT_FALSE(flags.contains(Flags::flag_b));
-    EXPECT_FALSE(flags.contains(Flags::flag_c));
+    EXPECT_FALSE(flags.is_set(Flags::flag_a));
+    EXPECT_FALSE(flags.is_set(Flags::flag_b));
+    EXPECT_FALSE(flags.is_set(Flags::flag_c));
 
     flags.set(Flags::flag_a);
     flags.set(Flags::flag_b);
 
-    EXPECT_TRUE(flags.contains(Flags::flag_a));
-    EXPECT_TRUE(flags.contains(Flags::flag_b));
-    EXPECT_FALSE(flags.contains(Flags::flag_c));
+    EXPECT_TRUE(flags.is_set(Flags::flag_a));
+    EXPECT_TRUE(flags.is_set(Flags::flag_b));
+    EXPECT_FALSE(flags.is_set(Flags::flag_c));
 }
 
 TEST_F(BitflagsTest, Remove) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b | RawFlags::flag_c;
 
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_a));
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_b));
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_c));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_a));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_b));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_c));
 
-    raw_flags.remove(RawFlags::flag_a);
-    raw_flags.remove(RawFlags::flag_b);
+    raw_flags.clear(RawFlags::flag_a);
+    raw_flags.clear(RawFlags::flag_b);
 
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_a));
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_b));
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_c));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_a));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_b));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_c));
 
     // flags (with string representation)
     Flags flags = Flags::flag_a | Flags::flag_b | Flags::flag_c;
 
-    EXPECT_TRUE(flags.contains(Flags::flag_a));
-    EXPECT_TRUE(flags.contains(Flags::flag_b));
-    EXPECT_TRUE(flags.contains(Flags::flag_c));
+    EXPECT_TRUE(flags.is_set(Flags::flag_a));
+    EXPECT_TRUE(flags.is_set(Flags::flag_b));
+    EXPECT_TRUE(flags.is_set(Flags::flag_c));
 
-    flags.remove(Flags::flag_a);
-    flags.remove(Flags::flag_b);
+    flags.clear(Flags::flag_a);
+    flags.clear(Flags::flag_b);
 
-    EXPECT_FALSE(flags.contains(Flags::flag_a));
-    EXPECT_FALSE(flags.contains(Flags::flag_b));
-    EXPECT_TRUE(flags.contains(Flags::flag_c));
+    EXPECT_FALSE(flags.is_set(Flags::flag_a));
+    EXPECT_FALSE(flags.is_set(Flags::flag_b));
+    EXPECT_TRUE(flags.is_set(Flags::flag_c));
 }
 
 TEST_F(BitflagsTest, Toggle) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b;
 
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_a));
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_b));
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_c));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_a));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_c));
 
     raw_flags.toggle(RawFlags::flag_a);
     raw_flags.toggle(RawFlags::flag_c);
 
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_a));
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_b));
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_c));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_a));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_b));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_c));
 
     raw_flags.toggle(RawFlags::flag_a);
     raw_flags.toggle(RawFlags::flag_b);
 
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_a));
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_b));
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_c));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_a));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_b));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_c));
 
     // flags (with string representation)
     Flags flags = Flags::flag_a | Flags::flag_b;
 
-    EXPECT_TRUE(flags.contains(Flags::flag_a));
-    EXPECT_TRUE(flags.contains(Flags::flag_b));
-    EXPECT_FALSE(flags.contains(Flags::flag_c));
+    EXPECT_TRUE(flags.is_set(Flags::flag_a));
+    EXPECT_TRUE(flags.is_set(Flags::flag_b));
+    EXPECT_FALSE(flags.is_set(Flags::flag_c));
 
     flags.toggle(Flags::flag_a);
     flags.toggle(Flags::flag_c);
 
-    EXPECT_FALSE(flags.contains(Flags::flag_a));
-    EXPECT_TRUE(flags.contains(Flags::flag_b));
-    EXPECT_TRUE(flags.contains(Flags::flag_c));
+    EXPECT_FALSE(flags.is_set(Flags::flag_a));
+    EXPECT_TRUE(flags.is_set(Flags::flag_b));
+    EXPECT_TRUE(flags.is_set(Flags::flag_c));
 
     flags.toggle(Flags::flag_a);
     flags.toggle(Flags::flag_b);
 
-    EXPECT_TRUE(flags.contains(Flags::flag_a));
-    EXPECT_FALSE(flags.contains(Flags::flag_b));
-    EXPECT_TRUE(flags.contains(Flags::flag_c));
+    EXPECT_TRUE(flags.is_set(Flags::flag_a));
+    EXPECT_FALSE(flags.is_set(Flags::flag_b));
+    EXPECT_TRUE(flags.is_set(Flags::flag_c));
 }
 
 TEST_F(BitflagsTest, Clear) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b;
 
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_a));
-    EXPECT_TRUE(raw_flags.contains(RawFlags::flag_b));
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_c));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_a));
+    EXPECT_TRUE(raw_flags.is_set(RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_c));
 
     raw_flags.clear();
 
     EXPECT_TRUE(raw_flags.is_empty());
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_a));
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_b));
-    EXPECT_FALSE(raw_flags.contains(RawFlags::flag_c));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_a));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_b));
+    EXPECT_FALSE(raw_flags.is_set(RawFlags::flag_c));
 
     // flags (with string representation)
     Flags flags = Flags::flag_a | Flags::flag_b;
 
-    EXPECT_TRUE(flags.contains(Flags::flag_a));
-    EXPECT_TRUE(flags.contains(Flags::flag_b));
-    EXPECT_FALSE(flags.contains(Flags::flag_c));
+    EXPECT_TRUE(flags.is_set(Flags::flag_a));
+    EXPECT_TRUE(flags.is_set(Flags::flag_b));
+    EXPECT_FALSE(flags.is_set(Flags::flag_c));
 
     flags.clear();
 
     EXPECT_TRUE(flags.is_empty());
-    EXPECT_FALSE(flags.contains(Flags::flag_a));
-    EXPECT_FALSE(flags.contains(Flags::flag_b));
-    EXPECT_FALSE(flags.contains(Flags::flag_c));
+    EXPECT_FALSE(flags.is_set(Flags::flag_a));
+    EXPECT_FALSE(flags.is_set(Flags::flag_b));
+    EXPECT_FALSE(flags.is_set(Flags::flag_c));
+}
+
+TEST_F(BitflagsTest, OnlySet) {
+    // raw flags (without string representation)
+    RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b;
+
+    EXPECT_FALSE(raw_flags.only_set(RawFlags::flag_a));
+    EXPECT_FALSE(raw_flags.only_set(RawFlags::flag_b));
+    
+    EXPECT_FALSE(raw_flags.only_set(RawFlags::flag_b));
+    raw_flags.clear(RawFlags::flag_b);
+
+    EXPECT_TRUE(raw_flags.only_set(RawFlags::flag_a));
+
+    raw_flags.set(RawFlags::flag_c);
+    EXPECT_FALSE(raw_flags.only_set(RawFlags::flag_a));
 }
