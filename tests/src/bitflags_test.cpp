@@ -238,16 +238,16 @@ TEST_F(BitflagsTest, Empty) {
 
 TEST_F(BitflagsTest, All) {
     // raw flags (without string representation)
-    RawFlags raw_flags = RawFlags::all();
+    RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b | RawFlags::flag_c;
 
     EXPECT_FALSE(raw_flags.is_empty());
     EXPECT_TRUE(raw_flags.all_set());
     EXPECT_TRUE(raw_flags & RawFlags::flag_a);
     EXPECT_TRUE(raw_flags & RawFlags::flag_b);
-    EXPECT_TRUE(raw_flags & RawFlags::flag_c);
-
+    EXPECT_TRUE(raw_flags & RawFlags::flag_c);    
+    
     // flags (with string representation)
-    Flags flags = Flags::all();
+    Flags flags = Flags::flag_a | Flags::flag_b | Flags::flag_c;
 
     EXPECT_FALSE(flags.is_empty());
     EXPECT_TRUE(flags.all_set());
