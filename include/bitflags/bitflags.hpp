@@ -82,13 +82,8 @@ struct flag_helper {
      *     FlagT <op> FlagT
      */
 
-    NODISCARD friend constexpr bool operator==(FlagT const& lhs, FlagT const& rhs) noexcept {
-        return lhs.bits == rhs.bits;
-    }
-
-    NODISCARD friend constexpr bool operator!=(FlagT const& lhs, FlagT const& rhs) noexcept {
-        return lhs.bits != rhs.bits;
-    }
+    NODISCARD friend constexpr bool operator==(FlagT const& lhs, FlagT const& rhs) noexcept { return lhs.bits == rhs.bits; }
+    NODISCARD friend constexpr bool operator!=(FlagT const& lhs, FlagT const& rhs) noexcept { return lhs.bits != rhs.bits; }
 
     /**
      * Bitwise operators overloads
@@ -98,21 +93,11 @@ struct flag_helper {
      *     FlagT <op>  FlagT
      */
 
-    NODISCARD friend constexpr FlagT operator~(FlagT const& rhs) noexcept {
-        return ~rhs.bits;
-    }
+    NODISCARD friend constexpr FlagT operator~(FlagT const& rhs) noexcept { return ~rhs.bits; }
 
-    NODISCARD friend constexpr FlagT operator&(FlagT const& lhs, FlagT const& rhs) noexcept {
-        return lhs.bits & rhs.bits;
-    }
-
-    NODISCARD friend constexpr FlagT operator|(FlagT const& lhs, FlagT const& rhs) noexcept {
-        return lhs.bits | rhs.bits;
-    }
-
-    NODISCARD friend constexpr FlagT operator^(FlagT const& lhs, FlagT const& rhs) noexcept {
-        return lhs.bits ^ rhs.bits;
-    }
+    NODISCARD friend constexpr FlagT operator&(FlagT const& lhs, FlagT const& rhs) noexcept { return lhs.bits & rhs.bits; }
+    NODISCARD friend constexpr FlagT operator|(FlagT const& lhs, FlagT const& rhs) noexcept { return lhs.bits | rhs.bits; }
+    NODISCARD friend constexpr FlagT operator^(FlagT const& lhs, FlagT const& rhs) noexcept { return lhs.bits ^ rhs.bits; }
 };
 
 /**
@@ -126,17 +111,11 @@ template <typename TagT, typename T = std::uint8_t>
 struct raw_flag : flag_helper<raw_flag<TagT, T>> {
     T bits;
 
-    constexpr raw_flag() noexcept
-        : bits(0)
-    {}
+    constexpr raw_flag() noexcept : bits(0) {}
 
-    constexpr raw_flag(T bits) noexcept
-        : bits(bits)
-    {}
+    constexpr raw_flag(T bits) noexcept : bits(bits) {}
 
-    NODISCARD explicit constexpr operator T() const noexcept {
-        return bits;
-    }
+    NODISCARD explicit constexpr operator T() const noexcept { return bits; }
 
     /**
      * Bitwise operators overloads
@@ -144,20 +123,9 @@ struct raw_flag : flag_helper<raw_flag<TagT, T>> {
      *     raw_flag <op>= raw_flag
      */
 
-    NON_CONST_CONSTEXPR raw_flag& operator&=(raw_flag const& rhs) noexcept {
-        bits &= rhs.bits;
-        return *this;
-    }
-
-    NON_CONST_CONSTEXPR raw_flag& operator|=(raw_flag const& rhs) noexcept {
-        bits |= rhs.bits;
-        return *this;
-    }
-
-    NON_CONST_CONSTEXPR raw_flag& operator^=(raw_flag const& rhs) noexcept {
-        bits ^= rhs.bits;
-        return *this;
-    }
+    NON_CONST_CONSTEXPR raw_flag& operator&=(raw_flag const& rhs) noexcept { bits &= rhs.bits; return *this; }
+    NON_CONST_CONSTEXPR raw_flag& operator|=(raw_flag const& rhs) noexcept { bits |= rhs.bits; return *this; }
+    NON_CONST_CONSTEXPR raw_flag& operator^=(raw_flag const& rhs) noexcept { bits ^= rhs.bits; return *this; }
 };
 
 /**
@@ -176,13 +144,9 @@ struct flag : flag_helper<flag<TagT, T>> {
     char const * name;
 #endif
 
-    constexpr flag() noexcept
-        : bits(0)
-    {}
+    constexpr flag() noexcept : bits(0) {}
 
-    constexpr flag(T bits) noexcept
-        : bits(bits)
-    {}
+    constexpr flag(T bits) noexcept : bits(bits) {}
 
 #if __cplusplus >= 201703L
     constexpr flag(T bits, std::string_view name) noexcept
@@ -193,9 +157,7 @@ struct flag : flag_helper<flag<TagT, T>> {
         , name(name)
     {}
 
-    NODISCARD explicit constexpr operator T() const noexcept {
-        return bits;
-    }
+    NODISCARD explicit constexpr operator T() const noexcept { return bits; }
 
     /**
      * Bitwise operators overloads
@@ -203,20 +165,9 @@ struct flag : flag_helper<flag<TagT, T>> {
      *     flag <op>= flag
      */
 
-    NON_CONST_CONSTEXPR flag& operator&=(flag const& rhs) noexcept {
-        bits &= rhs.bits;
-        return *this;
-    }
-
-    NON_CONST_CONSTEXPR flag& operator|=(flag const& rhs) noexcept {
-        bits |= rhs.bits;
-        return *this;
-    }
-
-    NON_CONST_CONSTEXPR flag& operator^=(flag const& rhs) noexcept {
-        bits ^= rhs.bits;
-        return *this;
-    }
+    NON_CONST_CONSTEXPR flag& operator&=(flag const& rhs) noexcept { bits &= rhs.bits; return *this; }
+    NON_CONST_CONSTEXPR flag& operator|=(flag const& rhs) noexcept { bits |= rhs.bits; return *this; }
+    NON_CONST_CONSTEXPR flag& operator^=(flag const& rhs) noexcept { bits ^= rhs.bits; return *this; }
 };
 
 /**
@@ -409,13 +360,8 @@ public:
         return curr_.bits;
     }
 
-    NODISCARD constexpr bool operator==(flag_type const& rhs) const noexcept {
-        return curr_ == rhs;
-    }
-
-    NODISCARD constexpr bool operator!=(flag_type const& rhs) const noexcept {
-        return curr_ != rhs;
-    }
+    NODISCARD constexpr bool operator==(flag_type const& rhs) const noexcept { return curr_ == rhs; }
+    NODISCARD constexpr bool operator!=(flag_type const& rhs) const noexcept { return curr_ != rhs; }
 
     /**
      * Bitwise operators overloads
@@ -427,36 +373,15 @@ public:
      *     bitflags<ImplT, T, FlagT> <op>= flag_type
      */
 
-    NODISCARD friend constexpr bitflags operator~(bitflags const& rhs) noexcept {
-        return ~rhs.curr_;
-    }
+    NODISCARD friend constexpr bitflags operator~(bitflags const& rhs) noexcept { return ~rhs.curr_; }
 
-    NODISCARD friend constexpr bitflags operator&(bitflags const& lhs, flag_type const& rhs) noexcept {
-        return lhs.curr_ & rhs;
-    }
+    NODISCARD friend constexpr bitflags operator&(bitflags const& lhs, flag_type const& rhs) noexcept { return lhs.curr_ & rhs; }
+    NODISCARD friend constexpr bitflags operator|(bitflags const& lhs, flag_type const& rhs) noexcept { return lhs.curr_ | rhs; }
+    NODISCARD friend constexpr bitflags operator^(bitflags const& lhs, flag_type const& rhs) noexcept { return lhs.curr_ ^ rhs; }
 
-    NODISCARD friend constexpr bitflags operator|(bitflags const& lhs, flag_type const& rhs) noexcept {
-        return lhs.curr_ | rhs;
-    }
-
-    NODISCARD friend constexpr bitflags operator^(bitflags const& lhs, flag_type const& rhs) noexcept {
-        return lhs.curr_ ^ rhs;
-    }
-
-    NON_CONST_CONSTEXPR bitflags& operator&=(flag_type const& rhs) noexcept {
-        curr_ &= rhs;
-        return *this;
-    }
-
-    NON_CONST_CONSTEXPR bitflags& operator|=(flag_type const& rhs) noexcept {
-        curr_ |= rhs;
-        return *this;
-    }
-
-    NON_CONST_CONSTEXPR bitflags& operator^=(flag_type const& rhs) noexcept {
-        curr_ ^= rhs;
-        return *this;
-    }
+    NON_CONST_CONSTEXPR bitflags& operator&=(flag_type const& rhs) noexcept { curr_ &= rhs; return *this; }
+    NON_CONST_CONSTEXPR bitflags& operator|=(flag_type const& rhs) noexcept { curr_ |= rhs; return *this; }
+    NON_CONST_CONSTEXPR bitflags& operator^=(flag_type const& rhs) noexcept { curr_ ^= rhs; return *this; }
 
     /**
      * Gets an underlying bits of current set of flags.
