@@ -357,17 +357,18 @@ template <
 >
 class bitflags : public ImplT {
 public:
+    using flag_type       = FlagT<ImplT, T>;
     using underlying_type = T;
 
     constexpr bitflags() = default;
     constexpr bitflags(bitflags&& rhs) = default;
     constexpr bitflags(bitflags const& rhs) = default;
 
-    constexpr bitflags(FlagT<ImplT, T>&& rhs) noexcept
+    constexpr bitflags(flag_type&& rhs) noexcept
         : curr_(std::move(rhs))
     {}
 
-    constexpr bitflags(FlagT<ImplT, T> const& rhs) noexcept
+    constexpr bitflags(flag_type const& rhs) noexcept
         : curr_(rhs)
     {}
 
@@ -392,12 +393,12 @@ public:
         return *this;
     }
 
-    bitflags& operator=(FlagT<ImplT, T>&& rhs) noexcept {
+    bitflags& operator=(flag_type&& rhs) noexcept {
         curr_ = std::move(rhs);
         return *this;
     }
 
-    bitflags& operator=(FlagT<ImplT, T> const& rhs) noexcept {
+    bitflags& operator=(flag_type const& rhs) noexcept {
         curr_ = rhs;
         return *this;
     }
@@ -408,11 +409,11 @@ public:
         return curr_.bits;
     }
 
-    NODISCARD constexpr bool operator==(FlagT<ImplT, T> const& rhs) const noexcept {
+    NODISCARD constexpr bool operator==(flag_type const& rhs) const noexcept {
         return curr_ == rhs;
     }
 
-    NODISCARD constexpr bool operator!=(FlagT<ImplT, T> const& rhs) const noexcept {
+    NODISCARD constexpr bool operator!=(flag_type const& rhs) const noexcept {
         return curr_ != rhs;
     }
 
@@ -421,38 +422,38 @@ public:
      *
      *     <op> bitflags<ImplT, T, FlagT>
      *
-     *     bitflags<ImplT, T, FlagT> <op>  FlagT<ImplT, T>
+     *     bitflags<ImplT, T, FlagT> <op>  flag_type
      *
-     *     bitflags<ImplT, T, FlagT> <op>= FlagT<ImplT, T>
+     *     bitflags<ImplT, T, FlagT> <op>= flag_type
      */
 
     NODISCARD friend constexpr bitflags operator~(bitflags const& rhs) noexcept {
         return ~rhs.curr_;
     }
 
-    NODISCARD friend constexpr bitflags operator&(bitflags const& lhs, FlagT<ImplT, T> const& rhs) noexcept {
+    NODISCARD friend constexpr bitflags operator&(bitflags const& lhs, flag_type const& rhs) noexcept {
         return lhs.curr_ & rhs;
     }
 
-    NODISCARD friend constexpr bitflags operator|(bitflags const& lhs, FlagT<ImplT, T> const& rhs) noexcept {
+    NODISCARD friend constexpr bitflags operator|(bitflags const& lhs, flag_type const& rhs) noexcept {
         return lhs.curr_ | rhs;
     }
 
-    NODISCARD friend constexpr bitflags operator^(bitflags const& lhs, FlagT<ImplT, T> const& rhs) noexcept {
+    NODISCARD friend constexpr bitflags operator^(bitflags const& lhs, flag_type const& rhs) noexcept {
         return lhs.curr_ ^ rhs;
     }
 
-    NON_CONST_CONSTEXPR bitflags& operator&=(FlagT<ImplT, T> const& rhs) noexcept {
+    NON_CONST_CONSTEXPR bitflags& operator&=(flag_type const& rhs) noexcept {
         curr_ &= rhs;
         return *this;
     }
 
-    NON_CONST_CONSTEXPR bitflags& operator|=(FlagT<ImplT, T> const& rhs) noexcept {
+    NON_CONST_CONSTEXPR bitflags& operator|=(flag_type const& rhs) noexcept {
         curr_ |= rhs;
         return *this;
     }
 
-    NON_CONST_CONSTEXPR bitflags& operator^=(FlagT<ImplT, T> const& rhs) noexcept {
+    NON_CONST_CONSTEXPR bitflags& operator^=(flag_type const& rhs) noexcept {
         curr_ ^= rhs;
         return *this;
     }
@@ -471,7 +472,7 @@ public:
      *
      * @return Empty set of flags
      */
-    NODISCARD static constexpr FlagT<ImplT, T> empty() noexcept {
+    NODISCARD static constexpr flag_type empty() noexcept {
         return T{};
     }
 
@@ -480,7 +481,7 @@ public:
      *
      * @return Set of all defined flags
      */
-    NODISCARD static constexpr FlagT<ImplT, T> all() noexcept {
+    NODISCARD static constexpr flag_type all() noexcept {
         return ~T{};
     }
 
@@ -511,7 +512,7 @@ public:
      * @return True if the specified flags is contained within the
      *         current set of flags, otherwise false
      */
-    NODISCARD constexpr bool contains(FlagT<ImplT, T> const& rhs) const noexcept {
+    NODISCARD constexpr bool contains(flag_type const& rhs) const noexcept {
         return static_cast<T>(curr_ & rhs) || rhs == empty();
     }
 
@@ -526,7 +527,7 @@ public:
      *         current set of flags, otherwise false
      */
     template <typename ... U>
-    NODISCARD constexpr bool contains(FlagT<ImplT, T> const& rhs_1, U const& ... rhs_n) const noexcept {
+    NODISCARD constexpr bool contains(flag_type const& rhs_1, U const& ... rhs_n) const noexcept {
         return contains(rhs_1) && contains(rhs_n...);
     }
 
@@ -535,7 +536,7 @@ public:
      *
      * @param rhs Flag to be set
      */
-    NON_CONST_CONSTEXPR void set(FlagT<ImplT, T> const& rhs) noexcept {
+    NON_CONST_CONSTEXPR void set(flag_type const& rhs) noexcept {
         curr_ |= rhs;
     }
 
@@ -544,7 +545,7 @@ public:
      *
      * @param rhs Flag to be unset
      */
-    NON_CONST_CONSTEXPR void remove(FlagT<ImplT, T> const& rhs) noexcept {
+    NON_CONST_CONSTEXPR void remove(flag_type const& rhs) noexcept {
         curr_ &= ~rhs;
     }
 
@@ -554,7 +555,7 @@ public:
      *
      * @param rhs Flag to be toggled
      */
-    NON_CONST_CONSTEXPR void toggle(FlagT<ImplT, T> const& rhs) noexcept {
+    NON_CONST_CONSTEXPR void toggle(flag_type const& rhs) noexcept {
         curr_ ^= rhs;
     }
 
@@ -566,7 +567,7 @@ public:
     }
 
 private:
-    FlagT<ImplT, T> curr_;
+    flag_type curr_;
 };
 
 } // bf
