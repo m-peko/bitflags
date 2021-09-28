@@ -49,7 +49,7 @@ int main() {
 * [Getting Started](#getting-started)
     * [Raw flags vs flags](#raw-flags-vs-flags)
     * [How to Declare Set of Flags?](#how-to-declare-set-of-flags)
-    * [Important notice for C++11](#important-notice-for-c11)
+    * [Important Notice For C++11](#important-notice-for-c11)
     * [Bits and Names](#bits-and-names)
     * [Bitwise Operators](#bitwise-operators)
     * [Is Specific Flag Set?](#is-specific-flag-set)
@@ -58,7 +58,7 @@ int main() {
     * [Toggle Flags](#toggle-flags)
     * [Clear Flags](#clear-flags)
 * [Benchmark](#benchmark)
-* [Building Samples and Tests](#building-samples-and-tests)
+* [Building Tests](#building-tests)
 * [Compiler Compatibility](#compiler-compatibility)
 * [Contributing](#contributing)
 * [License](#license)
@@ -167,7 +167,7 @@ using Flags = bf::bitflags<
 
 Usage is basically the same for `raw_flag`s.
 
-### Important notice for C++11
+### Important Notice For C++11
 
 In case you are using C++11, you need to define your flags separately like:
 
@@ -382,7 +382,7 @@ If you want to run the benchmark yourself, you can use `plot.py` script like:
 $ python3 plot.py --benchmarks-dir <benchmark-json-dir>
 ```
 
-## Building Samples and Tests
+## Building Tests
 
 ```bash
 $ git clone https://github.com/m-peko/bitflags
@@ -393,7 +393,7 @@ $ mkdir build
 $ cd build
 
 $ # configure the project
-$ cmake -DBITFLAGS_BUILD_SAMPLES=ON -DBITFLAGS_BUILD_TESTS=ON ..
+$ cmake -DBITFLAGS_BUILD_TESTS=ON ..
 
 $ # compile
 $ make
