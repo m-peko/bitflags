@@ -63,7 +63,6 @@ else ()
 endif ()
 
 option (BITFLAGS_BUILD_TESTS "Build tests" ON)
-option (BITFLAGS_BUILD_SAMPLES "Build examples" ON)
 option (BITFLAGS_BUILD_BENCHMARK "Build benchmark" OFF)
 
 include (GNUInstallDirs)
@@ -96,10 +95,6 @@ if (BITFLAGS_BUILD_TESTS)
     else ()
         message (STATUS "googletest git submodule is absent. Run `git submodule init && git submodule update` to get it")
     endif ()
-endif ()
-
-if (BITFLAGS_BUILD_SAMPLES)
-    add_subdirectory (samples)
 endif ()
 
 if (BITFLAGS_BUILD_BENCHMARK)

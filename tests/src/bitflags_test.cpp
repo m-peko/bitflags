@@ -30,7 +30,9 @@
 #include <gtest/gtest.h>
 #include <bitflags/bitflags.hpp>
 
-struct BitflagsTest : testing::Test {
+namespace
+{
+
     BEGIN_RAW_BITFLAGS(RawFlags)
         RAW_FLAG(none)
         RAW_FLAG(flag_a)
@@ -38,15 +40,26 @@ struct BitflagsTest : testing::Test {
         RAW_FLAG(flag_c)
     END_RAW_BITFLAGS(RawFlags)
 
+    DEFINE_FLAG(RawFlags, none)
+    DEFINE_FLAG(RawFlags, flag_a)
+    DEFINE_FLAG(RawFlags, flag_b)
+    DEFINE_FLAG(RawFlags, flag_c)
+
     BEGIN_BITFLAGS(Flags)
         FLAG(none)
         FLAG(flag_a)
         FLAG(flag_b)
         FLAG(flag_c)
     END_BITFLAGS(Flags)
-};
 
-TEST_F(BitflagsTest, Bits) {
+    DEFINE_FLAG(Flags, none)
+    DEFINE_FLAG(Flags, flag_a)
+    DEFINE_FLAG(Flags, flag_b)
+    DEFINE_FLAG(Flags, flag_c)
+
+} // namespace
+
+TEST(BitflagsTest, Bits) {
 #if __cplusplus >= 201402L
     // raw flags (without string representation)
     EXPECT_EQ(0b0000U, RawFlags::none.bits);
@@ -74,7 +87,7 @@ TEST_F(BitflagsTest, Bits) {
 #endif
 }
 
-TEST_F(BitflagsTest, Name) {
+TEST(BitflagsTest, Name) {
 #if __cplusplus >= 201703L
     EXPECT_EQ("none", Flags::none.name);
     EXPECT_EQ("flag_a", Flags::flag_a.name);
@@ -88,7 +101,7 @@ TEST_F(BitflagsTest, Name) {
 #endif
 }
 
-TEST_F(BitflagsTest, CastToUnderlyingType) {
+TEST(BitflagsTest, CastToUnderlyingType) {
 #if __cplusplus >= 201402L
     // raw flags (without string representation)
     EXPECT_EQ(0b0000U, static_cast<RawFlags::underlying_type>(RawFlags::none));
@@ -116,7 +129,7 @@ TEST_F(BitflagsTest, CastToUnderlyingType) {
 #endif
 }
 
-TEST_F(BitflagsTest, OperatorNot) {
+TEST(BitflagsTest, OperatorNot) {
     // raw flags (without string representation)
     RawFlags raw_flags = ~RawFlags::none;
 
@@ -132,7 +145,7 @@ TEST_F(BitflagsTest, OperatorNot) {
     EXPECT_TRUE(flags & Flags::flag_c);
 }
 
-TEST_F(BitflagsTest, OperatorAnd) {
+TEST(BitflagsTest, OperatorAnd) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b;
 
@@ -148,7 +161,7 @@ TEST_F(BitflagsTest, OperatorAnd) {
     EXPECT_FALSE(flags & Flags::flag_c);
 }
 
-TEST_F(BitflagsTest, OperatorOr) {
+TEST(BitflagsTest, OperatorOr) {
 #if __cplusplus >= 201402L
     // raw flags (without string representation)
     EXPECT_EQ(0b0011U, RawFlags::flag_a | RawFlags::flag_b);
@@ -168,7 +181,7 @@ TEST_F(BitflagsTest, OperatorOr) {
 #endif
 }
 
-TEST_F(BitflagsTest, OperatorXor) {
+TEST(BitflagsTest, OperatorXor) {
 #if __cplusplus >= 201402L
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::flag_a;
@@ -216,7 +229,7 @@ TEST_F(BitflagsTest, OperatorXor) {
 #endif
 }
 
-TEST_F(BitflagsTest, Empty) {
+TEST(BitflagsTest, Empty) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::empty();
 
@@ -236,7 +249,7 @@ TEST_F(BitflagsTest, Empty) {
     EXPECT_FALSE(flags & Flags::flag_c);
 }
 
-TEST_F(BitflagsTest, All) {
+TEST(BitflagsTest, All) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::all();
 
@@ -256,7 +269,7 @@ TEST_F(BitflagsTest, All) {
     EXPECT_TRUE(flags & Flags::flag_c);
 }
 
-TEST_F(BitflagsTest, Contains) {
+TEST(BitflagsTest, Contains) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b;
 
@@ -280,7 +293,7 @@ TEST_F(BitflagsTest, Contains) {
     EXPECT_FALSE(flags.contains(Flags::none, Flags::flag_a, Flags::flag_c));
 }
 
-TEST_F(BitflagsTest, Set) {
+TEST(BitflagsTest, Set) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::none;
 
@@ -310,7 +323,7 @@ TEST_F(BitflagsTest, Set) {
     EXPECT_FALSE(flags.contains(Flags::flag_c));
 }
 
-TEST_F(BitflagsTest, Remove) {
+TEST(BitflagsTest, Remove) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b | RawFlags::flag_c;
 
@@ -340,7 +353,7 @@ TEST_F(BitflagsTest, Remove) {
     EXPECT_TRUE(flags.contains(Flags::flag_c));
 }
 
-TEST_F(BitflagsTest, Toggle) {
+TEST(BitflagsTest, Toggle) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b;
 
@@ -384,7 +397,7 @@ TEST_F(BitflagsTest, Toggle) {
     EXPECT_TRUE(flags.contains(Flags::flag_c));
 }
 
-TEST_F(BitflagsTest, Clear) {
+TEST(BitflagsTest, Clear) {
     // raw flags (without string representation)
     RawFlags raw_flags = RawFlags::flag_a | RawFlags::flag_b;
 

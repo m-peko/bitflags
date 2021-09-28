@@ -158,9 +158,6 @@ script:
   # Generate build files
   - cmake .. -DBITFLAGS_CPP_VERSION:INTEGER=${CPP_VERSION-17} -DBITFLAGS_ENABLE_COVERAGE:BOOL=${ENABLE_COVERAGE-False}
 
-  # Compile samples
-  # - cmake --build . --target samples
-
   # Compile tests
   - cmake --build . --target tests
 
