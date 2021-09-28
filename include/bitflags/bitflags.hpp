@@ -541,4 +541,15 @@ private:
 #define FLAG(NAME) \
     static constexpr flag NAME{ bf::internal::shift<T>(__LINE__ - begin_ - 2), #NAME };
 
+#if __cplusplus < 201703L
+#   define DEFINE_FLAG(BITFLAGS_NAME, FLAG_NAME) \
+        template <typename T>                    \
+        typename BITFLAGS_NAME##Impl<T>::flag const BITFLAGS_NAME##Impl<T>::FLAG_NAME;
+#else
+    // C++17 and greater:
+    // An inline static data member can be defined in the class definition and may specify an initializer.
+    // It does not need an out-of-class definition.
+#   define DEFINE_FLAG(BITFLAGS_NAME, FLAG_NAME)
+#endif
+
 #endif // BITFLAGS_HPP
