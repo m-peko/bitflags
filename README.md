@@ -49,6 +49,7 @@ int main() {
 * [Getting Started](#getting-started)
     * [Raw flags vs flags](#raw-flags-vs-flags)
     * [How to Declare Set of Flags?](#how-to-declare-set-of-flags)
+    * [Important notice for C++11](#important-notice-for-c11)
     * [Bits and Names](#bits-and-names)
     * [Bitwise Operators](#bitwise-operators)
     * [Is Specific Flag Set?](#is-specific-flag-set)
@@ -165,6 +166,19 @@ using Flags = bf::bitflags<
 ```
 
 Usage is basically the same for `raw_flag`s.
+
+### Important notice for C++11
+
+In case you are using C++11, you need to define your flags separately like:
+
+```cpp
+DEFINE_FLAG(Flags, none)
+DEFINE_FLAG(Flags, flag_a)
+DEFINE_FLAG(Flags, flag_b)
+DEFINE_FLAG(Flags, flag_c)
+```
+
+This is because C++11 requires static class members to have an out-of-class definition.
 
 ### Bits and Names
 
